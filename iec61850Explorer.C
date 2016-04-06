@@ -43,6 +43,21 @@ std::vector<std::string> getLNList(IedConnection con, const std::string & parent
 	return nodes;
 }
 
+std::vector<std::string> getLNVars(IedConnection con, const std::string & parentLogicalNode)
+{
+	IedClientError error;
+	std::vector<std::string> objects;
+	LinkedList LNobjects = IedConnection_getLogicalNodeVariables(con, &error, parentLogicalNode.c_str());
+	LinkedList LNobject = LinkedList_getNext(LNobjects);
+	while(LNobject!=NULL)
+	{
+		objects.push_back((char*)LNobject->data);
+		LNobject = LinkedList_getNext(LNobject);
+	}
+	LinkedList_destroy(LNobjects);
+	return objects;
+}
+
 int main(int argc, char **argv)
 {
 	std::string hostname;
@@ -62,12 +77,19 @@ int main(int argc, char **argv)
 	if (error == IED_ERROR_OK)
 	{
 		std::vector<std::string> devices = getLDList(con);
-		for(std::vector<std::string>::iterator it=devices.begin();it<devices.end();it++)
+		for(std::vector<std::string>::iterator itLD=devices.begin();itLD<devices.end();itLD++)
 		{
-			std::cout<<"LD : "<<(*it)<<std::endl;
-			std::vector<std::string> nodes = getLNList(con, (*it));
-			for(std::vector<std::string>::iterator it2=nodes.begin();it2<nodes.end();it2++)
-				std::cout<<" LN : "<<(*it2)<<std::endl;
+			std::cout<<"LD : "<<(*itLD)<<std::endl;
+			std::vector<std::string> nodes = getLNList(con, (*itLD));
+			for(std::vector<std::string>::iterator itLN=nodes.begin();itLN<nodes.end();itLN++)
+			{
+				std::cout<<" LN : "<<(*itLN)<<std::endl;
+				std::vector<std::string> dataObjects=getLNVars(con, (*itLD)+"/"+(*itLN));
+				for(std::vector<std::string>::iterator itDO=dataObjects.begin();itDO<dataObjects.end();itDO++)
+				{
+					std::cout<<"  MMS : "<<(*itDO)<<std::endl;
+				}
+			}
 		}
 	}
 	else

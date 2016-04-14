@@ -15,6 +15,7 @@
 
 static int running = 0;
 static IedServer iedServer = NULL;
+DataAttribute *varSAV_setMagF, *varSAV_t ;
 
 void sigint_handler(int signalId)
 {
@@ -31,13 +32,10 @@ int launchIedServer(int port_61850)
 	LogicalDevice* lDevice1 = LogicalDevice_create("Device", myModel);
 	LogicalNode* lln0 = LogicalNode_create("LLN0", lDevice1);
 	char buffer[16];
-	for(i=0;i<3;i++)
-	{
-		sprintf(buffer, "varASG%d", i);
-		CDC_ASG_create(buffer, (ModelNode*) lln0, 0, false);
-		sprintf(buffer, "varSAV%d", i);
-		CDC_SAV_create(buffer, (ModelNode*) lln0, 0, false);
-	}
+	CDC_ASG_create("varASG", (ModelNode*) lln0, 0, false);
+	DataObject * varSAV = CDC_SAV_create("varSAV", (ModelNode*) lln0, 0, false);
+	varSAV_setMagF = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "instMag.f");
+	varSAV_t = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "t");
 	iedServer = IedServer_create(myModel);
 
 	IedServer_start(iedServer, port_61850);
@@ -59,10 +57,16 @@ int main(int argc, char **argv)
 	running = 1;
 	signal(SIGINT, sigint_handler);
 	launchIedServer(port_61850);
-
+	float myfloat;
 	while (running) 
 	{
 		sleep(1);
+		uint64_t timeval = Hal_getTimeInMs();
+		IedServer_lockDataModel(iedServer);
+		IedServer_updateUTCTimeAttributeValue(iedServer, varSAV_t, timeval);
+		IedServer_updateFloatAttributeValue(iedServer, varSAV_setMagF, myfloat);
+		IedServer_unlockDataModel(iedServer);
+		myfloat+=1e-3;
 	}
 
 	printf("Stoping iec server\n");

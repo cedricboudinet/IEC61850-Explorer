@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 project(iec61850Explorer)
+set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets REQUIRED)
 include_directories(${Qt5Widgets_INCLUDES})
 

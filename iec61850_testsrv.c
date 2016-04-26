@@ -36,6 +36,8 @@ int launchIedServer(int port_61850)
 	DataObject * varSAV = CDC_SAV_create("varSAV", (ModelNode*) lln0, 0, false);
 	varSAV_setMagF = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "instMag.f");
 	varSAV_t = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "t");
+	CDC_ENG_create("varENG", (ModelNode*) lln0, 0);
+	CDC_MV_create("varMV", (ModelNode*) lln0, 0, false);
 	iedServer = IedServer_create(myModel);
 
 	IedServer_start(iedServer, port_61850);

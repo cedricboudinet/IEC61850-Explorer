@@ -6,33 +6,69 @@
 #include <algorithm>
 #include <libiec61850/iec61850_client.h>
 #define buffLen 30
+
+void print_help()
+{
+	std::cout
+	<< "--help  show this help message and exit"<<std::endl
+	<< "-P ARG  port number"<<std::endl
+	<< "-H ARG  hostname"<<std::endl
+	<< "-V ARG  set varname to read"<<std::endl
+	<< "-F ARG  set variable functionnal constraint (int)"<<std::endl;
+	std::cout<<	"Examples :"<<std::endl<<
+		"  -V testDevice/LLN0.varMV.mag.f -F 1"<<std::endl<<
+		"  -V testDevice/LLN0.varSAV.instMag.f -F 1"<<std::endl<<
+		"  -V testDevice/LLN0.varASG.setMag.f -F 2"<<std::endl;
+}
+
+int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc)
+{
+	int i;
+	int number;
+	for (i = 1; i < argc; i++)
+	{
+		if(strcmp(argv[i], "--help")==0)
+		{
+			print_help(); exit(1);
+		}
+		else if(strcmp(argv[i], "-P")==0)
+		{
+			iecPort = atoi(argv[i+1]);
+			if((iecPort<=0)||(iecPort>=0xFFFF))
+			{
+				fprintf(stderr, "Please specify a valid port number\n");
+				exit(-1);
+			}
+			i++;
+		}
+		else if(strcmp(argv[i], "-H")==0)
+		{
+			hostname = argv[i+1];
+			i++;
+		}
+		else if(strcmp(argv[i], "-V")==0)
+		{
+			varName = argv[i+1];
+			i++;
+		}
+		else if(strcmp(argv[i], "-F")==0)
+		{
+			fc=(FunctionalConstraint)atoi(argv[i+1]);
+			i++;
+		}
+	}
+}
+
+
 int main(int argc, char **argv)
 {
 	std::string hostname, varName;
 	FunctionalConstraint varType;
 	int tcpPort = 102;
+	hostname="localhost";
 	char buffer[buffLen];
+	parseCmdLine(argc, argv, hostname, tcpPort, varName, varType);
 	
-	if (argc > 1)
-		varName = argv[1];
-	else
-	{
-		std::cout<<"Please specify a variable name and a type"<<std::endl;
-		std::cout<<	"Examples :"<<std::endl<<
-					"  testDevice/LLN0.varMV0.mag.f 2"<<std::endl<<
-					"  testDevice/LLN0.varSAV1.instMag.f 1"<<std::endl<<
-					"  testDevice/LLN0.varASG1.setMag.f 2"<<std::endl;
-		return 0;
-	}
-	if(argc > 2)
-		varType=(FunctionalConstraint)atoi(argv[2]);
-	if (argc > 3)
-		hostname = argv[3];
-	else
-		hostname = "localhost";
-
-	if (argc > 4)
-		tcpPort = atoi(argv[4]);
 	std::cout<<"Reading variable '"<<varName<<"' of type "<<FunctionalConstraint_toString(varType)<<" on "<<hostname<<":"<<tcpPort<<std::endl;
 
 	IedClientError error;

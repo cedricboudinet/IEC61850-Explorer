@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <libiec61850/iec61850_client.h>
 std::vector<std::string> getLDList(IedConnection con)
 {
@@ -58,6 +59,26 @@ std::vector<std::string> getLNVars(IedConnection con, const std::string & parent
 	return objects;
 }
 
+void dispLNVar(IedConnection con, const std::string & LNVarName, const std::string & parentDevice, const std::string & parentNode)
+{
+	//std::cout<<"  + "<<LNVarName<<std::endl;
+	std::string varName(LNVarName);
+	std::size_t found =varName.find("$");
+	char buffer[30];
+	if(found!=std::string::npos)
+	{
+		std::string fc;
+		fc=varName.substr(0,found-1);
+		varName=varName.substr(found+1);
+		std::replace(varName.begin(), varName.end(), '$', '.');
+		varName = parentDevice+'/'+parentNode+'.'+varName;
+		std::cout<<"  + "<<varName<<std::endl;
+		IedClientError error;
+		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), IEC61850_FC_MX);
+		std::cout<<"Error is "<<error<<", type is "<<MmsValue_getTypeString(my_mms)<<" value is "<<MmsValue_printToBuffer(my_mms, buffer, 30)<<std::endl;
+	}
+}
+
 int main(int argc, char **argv)
 {
 	std::string hostname;
@@ -87,7 +108,8 @@ int main(int argc, char **argv)
 				std::vector<std::string> dataObjects=getLNVars(con, (*itLD)+"/"+(*itLN));
 				for(std::vector<std::string>::iterator itDO=dataObjects.begin();itDO<dataObjects.end();itDO++)
 				{
-					std::cout<<"  MMS : "<<(*itDO)<<std::endl;
+					//std::cout<<"  MMS : "<<(*itDO)<<std::endl;
+					dispLNVar(con, *itDO, *itLD, *itLN);
 				}
 			}
 		}

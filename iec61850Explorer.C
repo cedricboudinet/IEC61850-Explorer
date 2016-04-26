@@ -64,7 +64,7 @@ void dispLNVar(IedConnection con, const std::string & LNVarName, const std::stri
 	//std::cout<<"  + "<<LNVarName<<std::endl;
 	std::string varName(LNVarName);
 	std::size_t found =varName.find("$");
-	char buffer[30];
+	char buffer[100];
 	if(found!=std::string::npos)
 	{
 		std::string fc;
@@ -72,10 +72,13 @@ void dispLNVar(IedConnection con, const std::string & LNVarName, const std::stri
 		varName=varName.substr(found+1);
 		std::replace(varName.begin(), varName.end(), '$', '.');
 		varName = parentDevice+'/'+parentNode+'.'+varName;
-		std::cout<<"  + "<<varName<<std::endl;
+		std::cout<<"  + "<<varName<<":";
 		IedClientError error;
 		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), IEC61850_FC_MX);
-		std::cout<<"Error is "<<error<<", type is "<<MmsValue_getTypeString(my_mms)<<" value is "<<MmsValue_printToBuffer(my_mms, buffer, 30)<<std::endl;
+		if(error!=0)
+			std::cout<<"Error "<<error;
+		std::cout<<"(type "<<MmsValue_getTypeString(my_mms)<<")= "<<MmsValue_printToBuffer(my_mms, buffer, 100);
+		std::cout<<std::endl;
 	}
 }
 

@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 	running = 1;
 	signal(SIGINT, sigint_handler);
 	launchIedServer(port_61850);
-	float myfloat;
+	float myfloat=0;
 	while (running) 
 	{
 		sleep(1);

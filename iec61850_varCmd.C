@@ -14,17 +14,19 @@ void print_help()
 	<< "-P ARG  port number"<<std::endl
 	<< "-H ARG  hostname"<<std::endl
 	<< "-V ARG  set varname to read"<<std::endl
-	<< "-F ARG  set variable functionnal constraint (int)"<<std::endl;
+	<< "-F ARG  set variable functionnal constraint (int)"<<std::endl
+	<< "-S ARG  set new value"<<std::endl;
 	std::cout<<	"Examples :"<<std::endl<<
 		"  -V testDevice/LLN0.varMV.mag.f -F 1"<<std::endl<<
 		"  -V testDevice/LLN0.varSAV.instMag.f -F 1"<<std::endl<<
 		"  -V testDevice/LLN0.varASG.setMag.f -F 2"<<std::endl;
 }
 
-int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc)
+int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
 {
 	int i;
 	int number;
+	writeIfTrue = false;
 	for (i = 1; i < argc; i++)
 	{
 		if(strcmp(argv[i], "--help")==0)
@@ -56,6 +58,12 @@ int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, s
 			fc=(FunctionalConstraint)atoi(argv[i+1]);
 			i++;
 		}
+		else if(strcmp(argv[i], "-S")==0)
+		{
+			writeIfTrue=true;
+			newVal = atof(argv[i+1]);
+			i++;
+		}
 	}
 }
 
@@ -67,9 +75,14 @@ int main(int argc, char **argv)
 	int tcpPort = 102;
 	hostname="localhost";
 	char buffer[buffLen];
-	parseCmdLine(argc, argv, hostname, tcpPort, varName, varType);
-	
-	std::cout<<"Reading variable '"<<varName<<"' of type "<<FunctionalConstraint_toString(varType)<<" on "<<hostname<<":"<<tcpPort<<std::endl;
+	bool writeIfTrue;
+	float newVal;
+	parseCmdLine(argc, argv, hostname, tcpPort, varName, varType, writeIfTrue, newVal);
+	if(writeIfTrue)
+		std::cout<<"Writing "<<newVal<<" in";
+	else
+		std::cout<<"Reading";
+	std::cout<<" variable '"<<varName<<"' of type "<<FunctionalConstraint_toString(varType)<<" on "<<hostname<<":"<<tcpPort<<std::endl;
 
 	IedClientError error;
 	IedConnection con = IedConnection_create();
@@ -77,17 +90,31 @@ int main(int argc, char **argv)
 	if (error == IED_ERROR_OK)
 	{
 		IedClientError error;
-		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), varType);
-		if(error!=IED_ERROR_OK)
+		MmsValue* my_mms;
+		if(writeIfTrue)
 		{
-			std::cout<<"Failed with error "<<error<<std::endl;
+			my_mms=MmsValue_newFloat(newVal);
+			IedConnection_writeObject(con, &error, varName.c_str(), varType, my_mms);
+			if(error!=IED_ERROR_OK)
+				std::cout<<"Failed with error "<<error<<std::endl;
+			else
+				std::cout<<"Done"<<std::endl;
 		}
 		else
 		{
-			std::cout<<"Type is "<<MmsValue_getTypeString(my_mms)<<std::endl;
-			MmsValue_printToBuffer(my_mms, buffer, buffLen);
-			std::cout<<"Value is "<<buffer<<std::endl;
+			my_mms = IedConnection_readObject(con, &error, varName.c_str(), varType);
+			if(error!=IED_ERROR_OK)
+			{
+				std::cout<<"Failed with error "<<error<<std::endl;
+			}
+			else
+			{
+				std::cout<<"Type is "<<MmsValue_getTypeString(my_mms)<<std::endl;
+				MmsValue_printToBuffer(my_mms, buffer, buffLen);
+				std::cout<<"Value is "<<buffer<<std::endl;
+			}
 		}
+		MmsValue_delete(my_mms);
 		IedConnection_close(con);
 	}
 	else

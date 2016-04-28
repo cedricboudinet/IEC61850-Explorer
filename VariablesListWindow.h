@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QDialog>
 #include <QPushButton>
-#include <QListView>
+#include <QListWidget>
 #include <libiec61850/iec61850_client.h>
 
 class VariablesListWindow : public QDialog
@@ -13,12 +13,10 @@ class VariablesListWindow : public QDialog
 		VariablesListWindow(QWidget *parent, IedConnection);
 
 	private:
-		QListView *variableList;
+		QListWidget *variableListWidget;
 
 	public slots:
 		void onOK();
 };
-
-
 
 #endif

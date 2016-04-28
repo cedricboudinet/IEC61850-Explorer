@@ -47,25 +47,61 @@ std::vector<std::string> getLNVars(IedConnection con, const std::string & parent
 	return objects;
 }
 
-void dispLNVar(IedConnection con, const std::string & LNVarName, const std::string & parentDevice, const std::string & parentNode)
+bool getVariableName(IedConnection con, const std::string & LNVarName, const std::string & parentDevice, const std::string & parentNode, std::string &varName, FunctionalConstraint &fc)
 {
-	//std::cout<<"  + "<<LNVarName<<std::endl;
-	std::string varName(LNVarName);
+	varName = LNVarName;
 	std::size_t found =varName.find("$");
-	char buffer[100];
 	if(found!=std::string::npos)
 	{
-		std::string fc;
-		fc=varName.substr(0,found);
+		std::string fcstr;
+		fcstr=varName.substr(0,found);
 		varName=varName.substr(found+1);
 		std::replace(varName.begin(), varName.end(), '$', '.');
 		varName = parentDevice+'/'+parentNode+'.'+varName;
 		std::cout<<"  + "<<varName<<":";
+		fc = FunctionalConstraint_fromString(fcstr.c_str());
+		return true;
+	}
+	return false;
+}
+
+void dispLNVar(IedConnection con, const std::string & LNVarName, const std::string & parentDevice, const std::string & parentNode)
+{
+	//std::cout<<"  + "<<LNVarName<<std::endl;
+	std::string varName; FunctionalConstraint fc;
+	if(getVariableName(con, LNVarName, parentDevice, parentNode, varName, fc))
+	{
 		IedClientError error;
-		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), FunctionalConstraint_fromString(fc.c_str()));
+		char buffer[100];
+		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), fc);
 		if(error!=0)
 			std::cout<<"Error "<<error;
 		std::cout<<"(type "<<MmsValue_getTypeString(my_mms)<<")= "<<MmsValue_printToBuffer(my_mms, buffer, 100);
 		std::cout<<std::endl;
 	}
 }
+
+std::map<std::string, FunctionalConstraint> getVariableList(IedConnection con)
+{
+	std::map<std::string, FunctionalConstraint> listVar;
+	std::string varName;
+	FunctionalConstraint fc;
+	std::vector<std::string> devices = getLDList(con);
+	for(std::vector<std::string>::iterator itLD=devices.begin();itLD<devices.end();itLD++)
+	{
+		std::vector<std::string> nodes = getLNList(con, (*itLD));
+		for(std::vector<std::string>::iterator itLN=nodes.begin();itLN<nodes.end();itLN++)
+		{
+			std::vector<std::string> dataObjects=getLNVars(con, (*itLD)+"/"+(*itLN));
+			for(std::vector<std::string>::iterator itDO=dataObjects.begin();itDO<dataObjects.end();itDO++)
+			{
+				//std::cout<<"  MMS : "<<(*itDO)<<std::endl;
+				//dispLNVar(con, 
+				if(getVariableName(con,*itDO, *itLD, *itLN, varName, fc))
+					listVar[varName]=fc;
+			}
+		}
+	}
+	return listVar;
+}
+

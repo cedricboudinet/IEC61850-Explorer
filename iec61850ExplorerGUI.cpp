@@ -19,6 +19,7 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 
 	QLabel *labelPort = new QLabel(tr("&Port:"));
 	lineEditPort = new QLineEdit("102");
+	lineEditPort->setValidator(new QIntValidator(1, 0xFFFF));
 	labelPort->setBuddy(lineEditPort);
 
 	connectBtn = new QPushButton(tr("&Connect"));

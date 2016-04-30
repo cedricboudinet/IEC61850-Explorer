@@ -1,3 +1,11 @@
+/// @author Cedric Boudinet
+/// @license GNU GPL Version 3
+///
+/// Distributed under the GNU GPL version 3 License
+/// (See accompanying file LICENSE or copy at
+/// http://www.gnu.org/licenses/)
+///
+
 #include "iec61850Exp_fun.h"
 #include <iostream>
 #include <algorithm>

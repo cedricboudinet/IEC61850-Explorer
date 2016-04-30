@@ -1,0 +1,1 @@
+For Windows : if libiec61850 is built with GOOSE support, please paste libwpcap.a in this directory

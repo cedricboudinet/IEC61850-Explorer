@@ -8,8 +8,6 @@
 #include <signal.h>
 #include <libiec61850/iec61850_server.h>
 #include <libiec61850/hal_thread.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <time.h>
 #include <pthread.h>
 

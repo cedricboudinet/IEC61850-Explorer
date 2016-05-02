@@ -48,6 +48,11 @@ IF(WIN32)
 	GET_TARGET_PROPERTY(QT5Gui_LIB_LOCATION Qt5::Gui LOCATION_${BUILD_TYPE})
 	GET_TARGET_PROPERTY(QT5Widgets_LIB_LOCATION Qt5::Widgets LOCATION_${BUILD_TYPE})
 	INSTALL(FILES ${QT5Core_LIB_LOCATION} ${QT5Gui_LIB_LOCATION} ${QT5Widgets_LIB_LOCATION} DESTINATION bin COMPONENT Applications)
+	get_filename_component(QT_DLL_DIR ${QT5Core_LIB_LOCATION} PATH)
+	install(FILES
+			${QT_DLL_DIR}/../plugins/platforms/qwindows.dll
+			DESTINATION bin/platforms COMPONENT Applications
+		   )
 
 	#Packaging third party librairies
 	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 PATHS third_party/libiec61850/lib)

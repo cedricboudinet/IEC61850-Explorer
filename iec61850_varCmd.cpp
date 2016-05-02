@@ -17,9 +17,9 @@ void print_help()
 	<< "-F ARG  set variable functionnal constraint (int)"<<std::endl
 	<< "-S ARG  set new value"<<std::endl;
 	std::cout<<	"Examples :"<<std::endl<<
-		"  -V testDevice/LLN0.varMV.mag.f -F 1"<<std::endl<<
-		"  -V testDevice/LLN0.varSAV.instMag.f -F 1"<<std::endl<<
-		"  -V testDevice/LLN0.varASG.setMag.f -F 2"<<std::endl;
+		"  -V testDevice/LLN0.varMV.mag.f -F MX"<<std::endl<<
+		"  -V testDevice/LLN0.varSAV.instMag.f -F MX"<<std::endl<<
+		"  -V testDevice/LLN0.varASG.setMag.f -F SP"<<std::endl;
 }
 
 int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
@@ -55,7 +55,7 @@ int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, s
 		}
 		else if(strcmp(argv[i], "-F")==0)
 		{
-			fc=(FunctionalConstraint)atoi(argv[i+1]);
+			fc=FunctionalConstraint_fromString(argv[i+1]);
 			i++;
 		}
 		else if(strcmp(argv[i], "-S")==0)

@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
 	if (argc > 2)
 		tcpPort = atoi(argv[2]);
-
+	std::cout<<"Showing variables on server "<<hostname<<":"<<tcpPort<<std::endl;
 	IedClientError error;
 	IedConnection con = IedConnection_create();
 	IedConnection_connect(con, &error, hostname.c_str(), tcpPort);

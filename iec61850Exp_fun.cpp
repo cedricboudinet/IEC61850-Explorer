@@ -66,7 +66,6 @@ bool getVariableName(IedConnection con, const std::string & LNVarName, const std
 		varName=varName.substr(found+1);
 		std::replace(varName.begin(), varName.end(), '$', '.');
 		varName = parentDevice+'/'+parentNode+'.'+varName;
-		std::cout<<"  + "<<varName<<":";
 		fc = FunctionalConstraint_fromString(fcstr.c_str());
 		return true;
 	}
@@ -82,6 +81,7 @@ void dispLNVar(IedConnection con, const std::string & LNVarName, const std::stri
 		IedClientError error;
 		char buffer[100];
 		MmsValue* my_mms = IedConnection_readObject(con, &error, varName.c_str(), fc);
+		std::cout<<"  + "<<varName<<" ["<<FunctionalConstraint_toString(fc)<<"]:";
 		if(error!=0)
 			std::cout<<"Error "<<error;
 		std::cout<<"(type "<<MmsValue_getTypeString(my_mms)<<")= "<<MmsValue_printToBuffer(my_mms, buffer, 100);

@@ -5,21 +5,29 @@
 #include <vector>
 #include <algorithm>
 #include <libiec61850/iec61850_client.h>
+#include "iec61850Exp_version.h"
 #define buffLen 30
 
 void print_help()
 {
 	std::cout
-	<< "--help  show this help message and exit"<<std::endl
-	<< "-P ARG  port number"<<std::endl
-	<< "-H ARG  hostname"<<std::endl
-	<< "-V ARG  set varname to read"<<std::endl
-	<< "-F ARG  set variable functionnal constraint (int)"<<std::endl
-	<< "-S ARG  set new value"<<std::endl;
+	<< "Usage :"<<std::endl
+	<< "  --help    show this help message and exit"<<std::endl
+	<< "  --version show version info and exit"<<std::endl
+	<< "  -P ARG    port number"<<std::endl
+	<< "  -H ARG    hostname"<<std::endl
+	<< "  -V ARG    set varname to read"<<std::endl
+	<< "  -F ARG    set variable functionnal constraint (int)"<<std::endl
+	<< "  -S ARG    set new value"<<std::endl;
 	std::cout<<	"Examples :"<<std::endl<<
 		"  -V testDevice/LLN0.varMV.mag.f -F MX"<<std::endl<<
 		"  -V testDevice/LLN0.varSAV.instMag.f -F MX"<<std::endl<<
 		"  -V testDevice/LLN0.varASG.setMag.f -F SP"<<std::endl;
+}
+
+void print_version()
+{
+	std::cout<< "iec61850_varCmd version "<<IECEXP_VERSION<<std::endl;
 }
 
 int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
@@ -32,6 +40,10 @@ int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, s
 		if(strcmp(argv[i], "--help")==0)
 		{
 			print_help(); exit(1);
+		}
+		else if(strcmp(argv[i], "--version")==0)
+		{
+			print_version(); exit(1);
 		}
 		else if(strcmp(argv[i], "-P")==0)
 		{

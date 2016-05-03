@@ -9,6 +9,7 @@
 #include "iec61850ExplorerGUI.h"
 #include <iostream>
 #include "VariablesListWindow.h"
+#include "iec61850Exp_version.h"
 
 
 ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
@@ -42,7 +43,9 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	layout->addWidget(textViewer, 3, 0, 1, 2);
 
 	setLayout(layout);
-	setWindowTitle(tr("IEC61850 Explorer"));
+	std::string title = "IEC61850 Explorer v ";
+	title+=IECEXP_VERSION;
+	setWindowTitle(title.c_str());
 	IedCon = IedConnection_create();
 }
 

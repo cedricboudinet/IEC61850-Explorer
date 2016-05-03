@@ -5,7 +5,7 @@ option(BUILD_GUI "Build GUI (Requires Qt5)" ON)
 SET(EXP_VERSION_MAJOR 0)
 SET(EXP_VERSION_MINOR 1)
 SET(EXP_VERSION_PATCH 0)
-
+file(WRITE iec61850Exp_version.h "#define IECEXP_VERSION \"${EXP_VERSION_MAJOR}.${EXP_VERSION_MINOR}.${EXP_VERSION_PATCH}\"\n")
 IF(WIN32)
 	link_directories(third_party/winpcap)
 	link_directories(third_party/libiec61850/lib)

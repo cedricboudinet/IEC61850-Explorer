@@ -30,10 +30,9 @@ void print_version()
 	std::cout<< "iec61850_varCmd version "<<IECEXP_VERSION<<std::endl;
 }
 
-int parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
+void parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
 {
 	int i;
-	int number;
 	writeIfTrue = false;
 	for (i = 1; i < argc; i++)
 	{

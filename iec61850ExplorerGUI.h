@@ -3,9 +3,9 @@
 #include <libiec61850/iec61850_client.h>
 #include <QWidget>
 #include <QLineEdit>
-#include <QTextBrowser>
 #include <QPushButton>
 #include <QListView>
+#include <QTableWidget>
 
 class ExplorerWindow : public QWidget
 {
@@ -16,14 +16,16 @@ class ExplorerWindow : public QWidget
 	private:
 		QLineEdit *lineEditServer;
 		QLineEdit *lineEditPort;
-		QTextBrowser * textViewer;
+		QTableWidget *iecVarTable;
 		QPushButton * addVar;
 		QPushButton * connectBtn;
+		QPushButton * refreshBtn;
 		IedConnection IedCon;
 
 	public slots:
 		void onConnect();
 		void onAddVar();
+		void onRefresh();
 };
 
 #endif // IEC61850EXPLORERGUI_H

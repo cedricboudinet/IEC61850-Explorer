@@ -11,9 +11,13 @@ class VariablesListWindow : public QDialog
 	Q_OBJECT
 	public:
 		VariablesListWindow(QWidget *parent, IedConnection);
+		QStringList getSelection();
 
 	private:
 		QListWidget *variableListWidget;
+		IedConnection _iedCon;
+		std::map<std::string, FunctionalConstraint> _VariablesList;
+		
 
 	public slots:
 		void onOK();

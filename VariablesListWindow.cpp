@@ -3,7 +3,8 @@
 #include <QGridLayout>
 #include <QDialogButtonBox>
 #include <iostream>
-VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) : QDialog(parent)
+#include "iec61850Exp_fun.h"
+VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) : QDialog(parent), _iedCon(iedCon)
 {
 	QGridLayout *layout = new QGridLayout;
 	setWindowTitle(tr("Variable list"));
@@ -16,9 +17,10 @@ VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) 
 	layout->addWidget(variableListWidget,1,0,1,1);
 	layout->addWidget(buttonBox,2,0,1,1);
 	setLayout(layout);
-	std::map<std::string, FunctionalConstraint> VariablesList = getVariableList(iedCon);
-	for(std::map<std::string, FunctionalConstraint>::iterator it =VariablesList.begin();it!=VariablesList.end();it++)
-		variableListWidget->addItem(QString(it->first.c_str()));
+	resize(400, 300);
+	_VariablesList = getVariableList(iedCon);
+	for(std::map<std::string, FunctionalConstraint>::iterator it =_VariablesList.begin();it!=_VariablesList.end();it++)
+		variableListWidget->addItem(QString(it->first.c_str())+" ["+FunctionalConstraint_toString(it->second)+"]");
 }
 
 
@@ -26,5 +28,17 @@ void VariablesListWindow::onOK()
 {
 	std::cout<<"TODO : add variables"<<std::endl;
 	accept();
+}
+
+QStringList VariablesListWindow::getSelection()
+{
+	QStringList selection;
+	QList<QListWidgetItem *> curList = variableListWidget->selectedItems();
+	for (int i = 0; i < curList.size(); ++i)
+	{
+		selection.append(curList.at(i)->text());
+	}
+	return selection;
+
 }
 

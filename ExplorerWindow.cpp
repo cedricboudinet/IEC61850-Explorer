@@ -35,21 +35,31 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 
 	iecVarTable = new QTableWidget(0,2);
 	iecVarTable->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+	iecVarTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	QStringList labels;
 	labels << tr("Variable") << tr("Value");
 	iecVarTable->setHorizontalHeaderLabels(labels);
 	iecVarTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	iecVarTable->verticalHeader()->hide();
 
-	QGridLayout *layout = new QGridLayout;
-	layout->addWidget(labelServer, 0, 0);
-	layout->addWidget(lineEditServer, 0, 1);
-	layout->addWidget(labelPort, 1, 0);
-	layout->addWidget(lineEditPort, 1, 1);
+	QVBoxLayout *layout = new QVBoxLayout;
+	QHBoxLayout *serverLayout = new QHBoxLayout;
+	serverLayout->addWidget(labelServer);
+	serverLayout->addWidget(lineEditServer);
+	layout->addLayout(serverLayout);
+
+	QHBoxLayout *portLayout = new QHBoxLayout;
+	portLayout->addWidget(labelPort);
+	portLayout->addWidget(lineEditPort);
+	layout->addLayout(portLayout);
 	//layout->addWidget(connectBtn, 2, 0, 1, 1);
-	layout->addWidget(addVar, 2, 0, 1, 1);
-	layout->addWidget(refreshBtn, 2, 1, 1, 1);
-	layout->addWidget(iecVarTable, 3, 0, 1, 3);
+
+	QHBoxLayout *btnsLayout = new QHBoxLayout;
+	btnsLayout->addWidget(addVar);
+	btnsLayout->addWidget(refreshBtn);
+	btnsLayout->addStretch();
+	layout->addLayout(btnsLayout);
+	layout->addWidget(iecVarTable);
 
 	setLayout(layout);
 	std::string title = "IEC61850 Explorer v ";

@@ -1,4 +1,0 @@
-#ifndef IEC61850EXPLORERGUI_H
-#define IEC61850EXPLORERGUI_H
-
-#endif

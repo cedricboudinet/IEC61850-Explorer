@@ -1,0 +1,5 @@
+iec61850Exp_version.h
+third_party/libiec61850/bin
+third_party/libiec61850/include/
+third_party/libiec61850/lib/
+third_party/winpcap/libwpcap.a

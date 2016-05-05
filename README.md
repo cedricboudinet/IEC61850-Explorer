@@ -12,17 +12,32 @@ Installation
 - Qt5
 
 ### Building
-	mkdir build
-	cd build
-	cmake ..
-	make
+```sh
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
 
 ### Testing
-	A simple test server (iec61850_testsrv) is supplied for testing purposes
-	Under linux, to allow the debug server to listen on port 102, users may install authbind and run:
-		sudo touch /etc/authbind/byport/102
-		sudo chown root:dialout /etc/authbind/byport/102
-		sudo chmod 711 /etc/authbind/byport/102
-	then you can run the server by launching :
-		authbind iec61850_testsrv
-	
+
+A simple test server (iec61850\_testsrv) is supplied for testing purposes.
+
+Under linux, to allow the debug server to listen on port 102, users may install authbind and run:
+```sh
+$ sudo touch /etc/authbind/byport/102
+$ sudo chown root:dialout /etc/authbind/byport/102
+$ sudo chmod 711 /etc/authbind/byport/102
+```
+
+then you can run the server by launching :
+```sh
+$ authbind iec61850_testsrv
+```
+
+### Roadmap
+
+- Improve shell version
+- Allow authentication
+- Add automatic refresh
+- Allow variables modification

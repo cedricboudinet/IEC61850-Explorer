@@ -1,11 +1,16 @@
+/// @author Cedric Boudinet
+/// @license GNU GPL Version 3
+///
+/// Distributed under the GNU GPL version 3 License
+/// (See accompanying file LICENSE or copy at
+/// http://www.gnu.org/licenses/)
+///
 #include <QPushButton>
 #include <QListView>
 #include <QLabel>
 #include <QGridLayout>
 #include <QMessageBox>
-#include <QHeaderView>
 #include <QTimer>
-#include <QMenu>
 
 #include "ExplorerWindow.h"
 #include <iostream>
@@ -34,17 +39,7 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	//refreshBtn->setEnabled(false);
 	connect(refreshBtn, SIGNAL(clicked()), this, SLOT(onRefresh()));
 
-	iecVarTable = new QTableWidget(0,2);
-	iecVarTable->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-	iecVarTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	QStringList labels;
-	labels << tr("Variable") << tr("Value");
-	iecVarTable->setHorizontalHeaderLabels(labels);
-	iecVarTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-	iecVarTable->verticalHeader()->hide();
-	iecVarTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	iecVarTable->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(iecVarTable, SIGNAL(customContextMenuRequested(QPoint)), SLOT(iecVarCustomMenuRequested(QPoint)));
+	iecVarTable = new VariablesView(this);
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	QHBoxLayout *serverLayout = new QHBoxLayout;
@@ -87,13 +82,7 @@ void ExplorerWindow::onAddVar()
 		if(varWin.exec())
 		{
 			QStringList varList = varWin.getSelection();
-			int row = iecVarTable->rowCount();
-			for(QStringList::iterator it=varList.begin(); it!=varList.end();it++)
-			{
-				iecVarTable->insertRow(row);
-				iecVarTable->setItem(row, 0, new QTableWidgetItem(*it));
-				iecVarTable->setItem(row, 1, new QTableWidgetItem(""));
-			}
+			iecVarTable->addVariables(varList);
 		}
 		IedConnection_close(IedCon);
 	}
@@ -139,40 +128,6 @@ void ExplorerWindow::onConnect()
 
 void ExplorerWindow::onRefresh()
 {
-	IedClientError error;
-	IedConnection_connect(IedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
-	if(IedConnection_getState(IedCon)== IED_STATE_CONNECTED)
-	{
-		MmsValue * myMms;
-		char buffer[100];
-		for(int i=0;i<iecVarTable->rowCount();i++)
-		{
-			std::string varName = iecVarTable->item(i,0)->text().toStdString();
-			std::string fc=varName.substr(varName.size()-3,2);
-			varName=varName.substr(0,varName.size()-5);
-			myMms = IedConnection_readObject(IedCon, &error, varName.c_str(), FunctionalConstraint_fromString(fc.c_str()));
-			iecVarTable->item(i,1)->setText(MmsValue_printToBuffer(myMms, buffer, 100));
-		}
-		IedConnection_close(IedCon);
-	}
+	iecVarTable->refresh(IedCon, lineEditServer->text(), lineEditPort->text().toInt());
 }
 
-void ExplorerWindow::iecVarCustomMenuRequested(QPoint pos)
-{
-	//QModelIndex index=iecVarTable->indexAt(pos);
-
-	QMenu *menu=new QMenu(this);
-	menu->addAction(new QAction("Delete", this));
-	QAction * selAction = menu->exec(iecVarTable->viewport()->mapToGlobal(pos));
-	if(selAction)
-	{
-		int i=0;
-		while(i<iecVarTable->rowCount())
-		{
-			if(iecVarTable->item(i,0)->isSelected())
-				iecVarTable->removeRow(i);
-			else
-				i++;
-		}
-	}
-}

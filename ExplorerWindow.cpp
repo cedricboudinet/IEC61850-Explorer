@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QTimer>
+#include <QMenu>
 
 #include "ExplorerWindow.h"
 #include <iostream>
@@ -41,6 +42,9 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	iecVarTable->setHorizontalHeaderLabels(labels);
 	iecVarTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	iecVarTable->verticalHeader()->hide();
+	iecVarTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	iecVarTable->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(iecVarTable, SIGNAL(customContextMenuRequested(QPoint)), SLOT(iecVarCustomMenuRequested(QPoint)));
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	QHBoxLayout *serverLayout = new QHBoxLayout;
@@ -150,5 +154,25 @@ void ExplorerWindow::onRefresh()
 			iecVarTable->item(i,1)->setText(MmsValue_printToBuffer(myMms, buffer, 100));
 		}
 		IedConnection_close(IedCon);
+	}
+}
+
+void ExplorerWindow::iecVarCustomMenuRequested(QPoint pos)
+{
+	//QModelIndex index=iecVarTable->indexAt(pos);
+
+	QMenu *menu=new QMenu(this);
+	menu->addAction(new QAction("Delete", this));
+	QAction * selAction = menu->exec(iecVarTable->viewport()->mapToGlobal(pos));
+	if(selAction)
+	{
+		int i=0;
+		while(i<iecVarTable->rowCount())
+		{
+			if(iecVarTable->item(i,0)->isSelected())
+				iecVarTable->removeRow(i);
+			else
+				i++;
+		}
 	}
 }

@@ -26,6 +26,7 @@ class ExplorerWindow : public QWidget
 		void onConnect();
 		void onAddVar();
 		void onRefresh();
+		void iecVarCustomMenuRequested(QPoint);
 };
 
 #endif // IEC61850EXPLORERGUI_H

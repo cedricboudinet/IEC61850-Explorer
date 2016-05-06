@@ -2,6 +2,7 @@
 #include "iec61850Exp_fun.h"
 #include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QListWidget>
 #include <iostream>
 #include "iec61850Exp_fun.h"
 VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) : QDialog(parent), _iedCon(iedCon)

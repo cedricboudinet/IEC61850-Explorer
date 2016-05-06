@@ -9,11 +9,11 @@
 #define EXPLORERWINDOW_H
 #include <libiec61850/iec61850_client.h>
 #include <QWidget>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QListView>
-#include <QTableWidget>
-#include "VariablesView.h"
+
+class VariablesView;
+class QLineEdit;
+class QCheckBox;
+class QPushButton;
 
 class ExplorerWindow : public QWidget
 {
@@ -29,11 +29,14 @@ class ExplorerWindow : public QWidget
 		QPushButton * connectBtn;
 		QPushButton * refreshBtn;
 		IedConnection IedCon;
+		QCheckBox *useAuth;
+		QLineEdit *passwdLE;
 
 	public slots:
-		void onConnect();
 		void onAddVar();
 		void onRefresh();
+		void onUseAuth();
+		void updateAuth();
 };
 
 #endif // IEC61850EXPLORERGUI_H

@@ -10,8 +10,12 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QMessageBox>
-#include <QTimer>
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QListView>
+#include <QTableWidget>
 
+#include "VariablesView.h"
 #include "ExplorerWindow.h"
 #include <iostream>
 #include "VariablesListWindow.h"
@@ -28,15 +32,18 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	lineEditPort->setValidator(new QIntValidator(1, 0xFFFF));
 	labelPort->setBuddy(lineEditPort);
 
-	//connectBtn = new QPushButton(tr("&Connect"));
-	//connect(connectBtn, SIGNAL(clicked()), this, SLOT(onConnect()));
+	useAuth = new QCheckBox(tr("&Use authentication"));
+	passwdLE = new QLineEdit("");
+	passwdLE->setEchoMode(QLineEdit::Password);
+	passwdLE->setEnabled(false);
+
+	connect(useAuth, SIGNAL(clicked()), this, SLOT(onUseAuth()));
+	connect(passwdLE, SIGNAL(editingFinished()), this, SLOT(updateAuth()));
 
 	addVar = new QPushButton(tr("&Add variables"));
-	//addVar->setEnabled(false);
 	connect(addVar, SIGNAL(clicked()), this, SLOT(onAddVar()));
 
 	refreshBtn = new QPushButton(tr("&Refresh"));
-	//refreshBtn->setEnabled(false);
 	connect(refreshBtn, SIGNAL(clicked()), this, SLOT(onRefresh()));
 
 	iecVarTable = new VariablesView(this);
@@ -51,7 +58,11 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	portLayout->addWidget(labelPort);
 	portLayout->addWidget(lineEditPort);
 	layout->addLayout(portLayout);
-	//layout->addWidget(connectBtn, 2, 0, 1, 1);
+	
+	QHBoxLayout *authLayout = new QHBoxLayout;
+	authLayout->addWidget(useAuth);
+	authLayout->addWidget(passwdLE);
+	layout->addLayout(authLayout);
 
 	QHBoxLayout *btnsLayout = new QHBoxLayout;
 	btnsLayout->addWidget(addVar);
@@ -65,9 +76,6 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	title+=IECEXP_VERSION;
 	setWindowTitle(title.c_str());
 	IedCon = IedConnection_create();
-	/*QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(onRefresh()));
-	timer->start(100);*/
 	resize(800, 600);
 }
 
@@ -93,44 +101,6 @@ void ExplorerWindow::onAddVar()
 	}
 }
 
-void ExplorerWindow::onConnect()
-{
-	std::cout<<"Connection request"<<std::endl;
-	IedClientError error;
-	bool isConnected=false;
-	switch(IedConnection_getState(IedCon))
-	{
-		case IED_STATE_CONNECTED:
-			std::cout<<"Disconnecting"<<std::endl;
-			IedConnection_close(IedCon);
-			break;
-		case IED_STATE_CLOSED:
-		case IED_STATE_IDLE:
-			std::cout<<"Trying to connect"<<std::endl;
-			IedConnection_connect(IedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
-			if(error==IED_ERROR_OK)
-				isConnected=true;
-			else
-			{
-				QMessageBox::warning(this, tr("Connection error"), tr("Connection failed with error %1").arg(error));
-				isConnected=false;
-			}
-			break;
-	}
-	if(isConnected)
-	{
-		addVar->setEnabled(true);
-		refreshBtn->setEnabled(true);
-		connectBtn->setText("Disconnect");
-	}
-	else
-	{
-		addVar->setEnabled(false);
-		refreshBtn->setEnabled(false);
-		connectBtn->setText("Connect");
-	}
-}
-
 void ExplorerWindow::onRefresh()
 {
 	setCursor(Qt::BusyCursor);
@@ -138,3 +108,27 @@ void ExplorerWindow::onRefresh()
 	setCursor(Qt::ArrowCursor);
 }
 
+void ExplorerWindow::onUseAuth()
+{
+	passwdLE->setEnabled(useAuth->isChecked());
+	updateAuth();
+}
+
+void ExplorerWindow::updateAuth()
+{
+	static MmsConnection mmsConnection = IedConnection_getMmsConnection(IedCon);
+	static IsoConnectionParameters parameters = MmsConnection_getIsoConnectionParameters(mmsConnection);
+	static AcseAuthenticationParameter auth = (AcseAuthenticationParameter) calloc(1, sizeof(struct sAcseAuthenticationParameter));
+	if(useAuth->isChecked())
+	{
+		char * passwd=strdup(passwdLE->text().toStdString().c_str());
+		AcseAuthenticationParameter_setPassword(auth, passwd);
+		AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_PASSWORD);
+		IsoConnectionParameters_setAcseAuthenticationParameter(parameters, auth);
+		free(passwd);
+	}
+	else
+	{
+		AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_NONE);
+	}
+}

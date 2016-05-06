@@ -8,6 +8,7 @@
 #include "VariablesView.h"
 #include <QMenu>
 #include <QHeaderView>
+#include <QMessageBox>
 VariablesView::VariablesView(QWidget *parent) : QTableWidget(0,2, parent)
 {
 	setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
@@ -58,8 +59,9 @@ void VariablesView::addVariables(const QStringList& varList)
 void VariablesView::refresh(IedConnection IedCon, const QString& server, int port)
 {
 	IedClientError error;
+	setCursor(Qt::BusyCursor);
 	IedConnection_connect(IedCon, &error, server.toStdString().c_str(), port);
-	if(IedConnection_getState(IedCon)== IED_STATE_CONNECTED)
+	if(error == IED_ERROR_OK)
 	{
 		MmsValue * myMms;
 		char buffer[100];
@@ -72,6 +74,12 @@ void VariablesView::refresh(IedConnection IedCon, const QString& server, int por
 			item(i,1)->setText(MmsValue_printToBuffer(myMms, buffer, 100));
 		}
 		IedConnection_close(IedCon);
+		setCursor(Qt::ArrowCursor);
+	}
+	else
+	{
+		setCursor(Qt::ArrowCursor);
+		QMessageBox::warning(this, tr("Connection error"), tr("Connection failed with error %1").arg(error));
 	}
 
 }

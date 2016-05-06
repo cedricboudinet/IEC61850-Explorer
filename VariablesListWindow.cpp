@@ -26,7 +26,6 @@ VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) 
 
 void VariablesListWindow::onOK()
 {
-	std::cout<<"TODO : add variables"<<std::endl;
 	accept();
 }
 

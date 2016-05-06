@@ -73,10 +73,11 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 
 void ExplorerWindow::onAddVar()
 {
-	std::cout<<"Adding variables"<<std::endl;
 	IedClientError error;
+	setCursor(Qt::BusyCursor);
 	IedConnection_connect(IedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
-	if(IedConnection_getState(IedCon)== IED_STATE_CONNECTED)
+	setCursor(Qt::ArrowCursor);
+	if(error==IED_ERROR_OK)
 	{
 		VariablesListWindow varWin(this, IedCon);
 		if(varWin.exec())
@@ -85,6 +86,10 @@ void ExplorerWindow::onAddVar()
 			iecVarTable->addVariables(varList);
 		}
 		IedConnection_close(IedCon);
+	}
+	else
+	{
+		QMessageBox::warning(this, tr("Connection error"), tr("Connection failed with error %1").arg(error));
 	}
 }
 
@@ -128,6 +133,8 @@ void ExplorerWindow::onConnect()
 
 void ExplorerWindow::onRefresh()
 {
+	setCursor(Qt::BusyCursor);
 	iecVarTable->refresh(IedCon, lineEditServer->text(), lineEditPort->text().toInt());
+	setCursor(Qt::ArrowCursor);
 }
 

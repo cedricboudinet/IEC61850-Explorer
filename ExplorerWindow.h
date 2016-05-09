@@ -14,6 +14,7 @@ class VariablesView;
 class QLineEdit;
 class QCheckBox;
 class QPushButton;
+class QTimer;
 
 class ExplorerWindow : public QWidget
 {
@@ -31,10 +32,14 @@ class ExplorerWindow : public QWidget
 		IedConnection IedCon;
 		QCheckBox *useAuth;
 		QLineEdit *passwdLE;
+		QCheckBox *autorefreshChkBx;
+		QLineEdit *autorefreshPeriod;
+		QTimer *autorefreshTimer;
 
 	public slots:
 		void onAddVar();
 		void onRefresh();
+		void onAutorefreshConfig();
 		void onUseAuth();
 		void updateAuth();
 };

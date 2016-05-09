@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QListView>
 #include <QTableWidget>
+#include <QTimer>
 
 #include "VariablesView.h"
 #include "ExplorerWindow.h"
@@ -36,9 +37,16 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	passwdLE = new QLineEdit("");
 	passwdLE->setEchoMode(QLineEdit::Password);
 	passwdLE->setEnabled(false);
-
 	connect(useAuth, SIGNAL(clicked()), this, SLOT(onUseAuth()));
 	connect(passwdLE, SIGNAL(editingFinished()), this, SLOT(updateAuth()));
+
+	autorefreshChkBx = new QCheckBox(tr("Au&tomatic refresh (ms)"));
+	autorefreshPeriod = new QLineEdit("1000");
+	autorefreshPeriod->setEnabled(false);
+	autorefreshTimer=new QTimer(this);
+	connect(autorefreshTimer, SIGNAL(timeout()), this, SLOT(onRefresh()));
+	connect(autorefreshChkBx, SIGNAL(clicked()), this, SLOT(onAutorefreshConfig()));
+	connect(autorefreshPeriod, SIGNAL(editingFinished()), this, SLOT(onAutorefreshConfig()));
 
 	addVar = new QPushButton(tr("&Add variables"));
 	connect(addVar, SIGNAL(clicked()), this, SLOT(onAddVar()));
@@ -63,6 +71,12 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	authLayout->addWidget(useAuth);
 	authLayout->addWidget(passwdLE);
 	layout->addLayout(authLayout);
+
+	QHBoxLayout *autorefreshLayout = new QHBoxLayout;
+	autorefreshLayout->addWidget(autorefreshChkBx);
+	autorefreshLayout->addWidget(autorefreshPeriod);
+	autorefreshPeriod->setValidator(new QIntValidator(1, 0xFFFF));
+	layout->addLayout(autorefreshLayout);
 
 	QHBoxLayout *btnsLayout = new QHBoxLayout;
 	btnsLayout->addWidget(addVar);
@@ -106,6 +120,20 @@ void ExplorerWindow::onRefresh()
 	setCursor(Qt::BusyCursor);
 	iecVarTable->refresh(IedCon, lineEditServer->text(), lineEditPort->text().toInt());
 	setCursor(Qt::ArrowCursor);
+}
+
+void ExplorerWindow::onAutorefreshConfig()
+{
+	if(autorefreshChkBx->isChecked())
+	{
+		autorefreshTimer->start(autorefreshPeriod->text().toInt());
+		autorefreshPeriod->setEnabled(true);
+	}
+	else
+	{
+		autorefreshTimer->stop();
+		autorefreshPeriod->setEnabled(false);
+	}
 }
 
 void ExplorerWindow::onUseAuth()

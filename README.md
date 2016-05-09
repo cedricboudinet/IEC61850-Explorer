@@ -38,6 +38,9 @@ $ authbind iec61850_testsrv
 ### Roadmap
 
 - Improve shell version
+- Allow variables modification
+
+### Work in progress
+
 - Allow authentication
 - Add automatic refresh
-- Allow variables modification

@@ -54,6 +54,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	IedConnection_close(con);
 	IedConnection_destroy(con);
 	return 0;
 }

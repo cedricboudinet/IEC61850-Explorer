@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <libiec61850/iec61850_client.h>
 #include "iec61850Exp_version.h"
+#include "iec61850Exp_fun.h"
 #define buffLen 30
 
 void print_help()
@@ -14,6 +15,7 @@ void print_help()
 	<< "Usage :"<<std::endl
 	<< "  --help    show this help message and exit"<<std::endl
 	<< "  --version show version info and exit"<<std::endl
+	<< "  --auth    use authentication"<<std::endl
 	<< "  -P ARG    port number"<<std::endl
 	<< "  -H ARG    hostname"<<std::endl
 	<< "  -V ARG    set varname to read"<<std::endl
@@ -30,10 +32,11 @@ void print_version()
 	std::cout<< "iec61850_varCmd version "<<IECEXP_VERSION<<std::endl;
 }
 
-void parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal)
+void parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, std::string & varName, FunctionalConstraint & fc, bool & writeIfTrue, float & newVal, bool & useAuth)
 {
 	int i;
 	writeIfTrue = false;
+	useAuth=false;
 	for (i = 1; i < argc; i++)
 	{
 		if(strcmp(argv[i], "--help")==0)
@@ -43,6 +46,10 @@ void parseCmdLine(int argc, char **argv, std::string & hostname, int & iecPort, 
 		else if(strcmp(argv[i], "--version")==0)
 		{
 			print_version(); exit(1);
+		}
+		else if(strcmp(argv[i], "--auth")==0)
+		{
+			useAuth=true;
 		}
 		else if(strcmp(argv[i], "-P")==0)
 		{
@@ -88,7 +95,16 @@ int main(int argc, char **argv)
 	char buffer[buffLen];
 	bool writeIfTrue;
 	float newVal;
-	parseCmdLine(argc, argv, hostname, tcpPort, varName, varType, writeIfTrue, newVal);
+	bool useAuth; std::string password;
+	parseCmdLine(argc, argv, hostname, tcpPort, varName, varType, writeIfTrue, newVal, useAuth);
+	if(useAuth)
+	{
+		std::cout<<"Please enter password :";
+		password="";
+		SetStdinEcho(false);
+		std::cin>>password;
+		SetStdinEcho(true);
+	}
 	if(writeIfTrue)
 		std::cout<<"Writing "<<newVal<<" in";
 	else
@@ -97,6 +113,10 @@ int main(int argc, char **argv)
 
 	IedClientError error;
 	IedConnection con = IedConnection_create();
+	if(useAuth)
+	{
+		setIedPasswd(con, password);
+	}
 	IedConnection_connect(con, &error, hostname.c_str(), tcpPort);
 	if (error == IED_ERROR_OK)
 	{

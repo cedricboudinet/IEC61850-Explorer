@@ -9,6 +9,8 @@
 #include "iec61850Exp_fun.h"
 #include <iostream>
 #include <algorithm>
+#include <termios.h>
+#include <unistd.h>
 std::vector<std::string> getLDList(IedConnection con)
 {
 	IedClientError error;
@@ -113,3 +115,40 @@ std::map<std::string, FunctionalConstraint> getVariableList(IedConnection con)
 	return listVar;
 }
 
+void setIedPasswd(IedConnection IedCon, std::string password)
+{
+	MmsConnection mmsConnection = IedConnection_getMmsConnection(IedCon);
+	IsoConnectionParameters parameters = MmsConnection_getIsoConnectionParameters(mmsConnection);
+	AcseAuthenticationParameter auth = (AcseAuthenticationParameter) calloc(1, sizeof(struct sAcseAuthenticationParameter));
+	char * passwd=strdup(password.c_str());
+	AcseAuthenticationParameter_setPassword(auth, passwd);
+	AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_PASSWORD);
+	IsoConnectionParameters_setAcseAuthenticationParameter(parameters, auth);
+	free(passwd);
+}
+
+void SetStdinEcho(bool enable)
+{
+#ifdef WIN32
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+    DWORD mode;
+    GetConsoleMode(hStdin, &mode);
+
+    if( !enable )
+        mode &= ~ENABLE_ECHO_INPUT;
+    else
+        mode |= ENABLE_ECHO_INPUT;
+
+    SetConsoleMode(hStdin, mode );
+
+#else
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    if( !enable )
+        tty.c_lflag &= ~ECHO;
+    else
+        tty.c_lflag |= ECHO;
+
+    (void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+#endif
+}

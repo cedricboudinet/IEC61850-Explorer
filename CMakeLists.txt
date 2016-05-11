@@ -17,7 +17,7 @@ ENDIF()
 add_executable(iec61850-shell iec61850-shell.cpp iec61850Exp_fun.cpp)
 target_link_libraries(iec61850-shell iec61850 pthread)
 
-add_executable(iec61850_varCmd iec61850_varCmd.cpp)
+add_executable(iec61850_varCmd iec61850_varCmd.cpp iec61850Exp_fun.cpp)
 target_link_libraries(iec61850_varCmd iec61850 pthread)
 
 add_executable(iec61850_testsrv iec61850_testsrv.c)

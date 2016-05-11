@@ -21,6 +21,7 @@
 #include <iostream>
 #include "VariablesListWindow.h"
 #include "iec61850Exp_version.h"
+#include "iec61850Exp_fun.h"
 
 ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 {
@@ -144,19 +145,13 @@ void ExplorerWindow::onUseAuth()
 
 void ExplorerWindow::updateAuth()
 {
-	static MmsConnection mmsConnection = IedConnection_getMmsConnection(IedCon);
-	static IsoConnectionParameters parameters = MmsConnection_getIsoConnectionParameters(mmsConnection);
-	static AcseAuthenticationParameter auth = (AcseAuthenticationParameter) calloc(1, sizeof(struct sAcseAuthenticationParameter));
 	if(useAuth->isChecked())
 	{
-		char * passwd=strdup(passwdLE->text().toStdString().c_str());
-		AcseAuthenticationParameter_setPassword(auth, passwd);
-		AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_PASSWORD);
-		IsoConnectionParameters_setAcseAuthenticationParameter(parameters, auth);
-		free(passwd);
+		setIedPasswd(IedCon, passwdLE->text().toStdString());
 	}
 	else
 	{
+		AcseAuthenticationParameter auth = (AcseAuthenticationParameter) calloc(1, sizeof(struct sAcseAuthenticationParameter));
 		AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_NONE);
 	}
 }

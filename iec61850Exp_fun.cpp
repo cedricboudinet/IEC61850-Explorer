@@ -152,3 +152,33 @@ void SetStdinEcho(bool enable)
     (void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 #endif
 }
+
+int display_server_structure(IedConnection con)
+{
+	std::cout<<"Showing variables on server"<<std::endl;
+	if (IedConnection_getState(con)==IED_STATE_CONNECTED)
+	{
+		std::vector<std::string> devices = getLDList(con);
+		for(std::vector<std::string>::iterator itLD=devices.begin();itLD<devices.end();itLD++)
+		{
+			std::cout<<"LD : "<<(*itLD)<<std::endl;
+			std::vector<std::string> nodes = getLNList(con, (*itLD));
+			for(std::vector<std::string>::iterator itLN=nodes.begin();itLN<nodes.end();itLN++)
+			{
+				std::cout<<" LN : "<<(*itLN)<<std::endl;
+				std::vector<std::string> dataObjects=getLNVars(con, (*itLD)+"/"+(*itLN));
+				for(std::vector<std::string>::iterator itDO=dataObjects.begin();itDO<dataObjects.end();itDO++)
+				{
+					//std::cout<<"  MMS : "<<(*itDO)<<std::endl;
+					dispLNVar(con, *itDO, *itLD, *itLN);
+				}
+			}
+		}
+	}
+	else
+	{
+		std::cout<<"Not connected"<<std::endl;
+		return -1;
+	}
+	return 1;
+}

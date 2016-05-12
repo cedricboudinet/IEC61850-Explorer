@@ -1,3 +1,10 @@
+/// @author Cedric Boudinet
+/// @license GNU GPL Version 3
+///
+/// Distributed under the GNU GPL version 3 License
+/// (See accompanying file LICENSE or copy at
+/// http://www.gnu.org/licenses/)
+///
 #ifndef iec61850EXP_FUN_H
 #define iec61850EXP_FUN_H
 #include <string>
@@ -13,5 +20,6 @@ std::map<std::string, FunctionalConstraint> getVariableList(IedConnection con);
 bool getVariableName(IedConnection con, const std::string & LNVarName, const std::string & parentDevice, const std::string & parentNode, std::string &varName, FunctionalConstraint &fc);
 void setIedPasswd(IedConnection, std::string password);
 void SetStdinEcho(bool enable = true);
+int display_server_structure(IedConnection);
 
 #endif

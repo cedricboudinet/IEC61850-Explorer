@@ -104,6 +104,7 @@ int main(int argc, char **argv)
 		SetStdinEcho(false);
 		std::cin>>password;
 		SetStdinEcho(true);
+		std::cout<<std::endl;
 	}
 	if(writeIfTrue)
 		std::cout<<"Writing "<<newVal<<" in";

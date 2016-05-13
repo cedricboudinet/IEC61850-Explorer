@@ -9,7 +9,11 @@
 #include "iec61850Exp_fun.h"
 #include <iostream>
 #include <algorithm>
-#include <termios.h>
+#ifdef WIN32
+	#include <windows.h>
+#else
+	#include <termios.h>
+#endif
 #include <unistd.h>
 std::vector<std::string> getLDList(IedConnection con)
 {
@@ -130,26 +134,26 @@ void setIedPasswd(IedConnection IedCon, std::string password)
 void SetStdinEcho(bool enable)
 {
 #ifdef WIN32
-    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
-    DWORD mode;
-    GetConsoleMode(hStdin, &mode);
+	HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD mode;
+	GetConsoleMode(hStdin, &mode);
 
-    if( !enable )
-        mode &= ~ENABLE_ECHO_INPUT;
-    else
-        mode |= ENABLE_ECHO_INPUT;
+	if( !enable )
+		mode &= ~ENABLE_ECHO_INPUT;
+	else
+		mode |= ENABLE_ECHO_INPUT;
 
-    SetConsoleMode(hStdin, mode );
+	SetConsoleMode(hStdin, mode );
 
 #else
-    struct termios tty;
-    tcgetattr(STDIN_FILENO, &tty);
-    if( !enable )
-        tty.c_lflag &= ~ECHO;
-    else
-        tty.c_lflag |= ECHO;
+	struct termios tty;
+	tcgetattr(STDIN_FILENO, &tty);
+	if( !enable )
+		tty.c_lflag &= ~ECHO;
+	else
+		tty.c_lflag |= ECHO;
 
-    (void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+	(void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 #endif
 }
 

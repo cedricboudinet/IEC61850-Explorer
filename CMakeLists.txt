@@ -14,6 +14,19 @@ IF(WIN32)
 	link_directories(third_party/libiec61850/lib)
 	include_directories(third_party/libiec61850/include)
 ENDIF()
+configure_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in
+		${CMAKE_CURRENT_SOURCE_DIR}/version.rc
+		@ONLY)
+set(RES_FILES "")
+if( MINGW )
+	message(STATUS "Defining compile rule for RC")
+	set(RES_FILES "version.rc")
+	set(CMAKE_RC_COMPILER_INIT windres)
+	ENABLE_LANGUAGE(RC)
+	SET(CMAKE_RC_COMPILE_OBJECT
+	"<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+endif(MINGW)
 add_library (iec61850Exp STATIC iec61850Exp_fun.cpp)
 target_link_libraries(iec61850Exp pthread iec61850)
 
@@ -32,7 +45,7 @@ target_link_libraries(iec61850_testsrv iec61850 pthread)
 IF(BUILD_GUI)
 	find_package(Qt5Widgets REQUIRED)
 	include_directories(${Qt5Widgets_INCLUDES})
-	add_executable(iec61850-Explorer WIN32 iec61850-Explorer.cpp VariablesListWindow.cpp ExplorerWindow.cpp VariablesView.cpp)
+	add_executable(iec61850-Explorer WIN32 iec61850-Explorer.cpp VariablesListWindow.cpp ExplorerWindow.cpp VariablesView.cpp ${RES_FILES})
 	qt5_use_modules(iec61850-Explorer Widgets)
 	set_target_properties(iec61850-Explorer PROPERTIES AUTOMOC TRUE)
 	target_link_libraries(iec61850-Explorer iec61850 iec61850Exp)
@@ -66,7 +79,7 @@ IF(WIN32)
 		   )
 
 	#Packaging third party librairies
-	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 PATHS third_party/libiec61850/lib)
+	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 PATHS third_party/libiec61850/bin)
 	message(STATUS "Found LIBIEC61850 in ${LIBIEC61850_LIBRARY}")
 	find_library(WPCAP_LIBRARY NAMES wpcap PATHS third_party/winpcap/lib)
 	message(STATUS "Found Winpcap in ${WPCAP_LIBRARY}")

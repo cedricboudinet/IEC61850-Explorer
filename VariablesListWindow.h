@@ -1,9 +1,19 @@
+/// @author Cedric Boudinet
+/// @license GNU GPL Version 3
+///
+/// Distributed under the GNU GPL version 3 License
+/// (See accompanying file LICENSE or copy at
+/// http://www.gnu.org/licenses/)
+///
+
 #ifndef VARIABLESLISTWINDOW_H
 #define VARIABLESLISTWINDOW_H
 #include <QDialog>
 #include <libiec61850/iec61850_client.h>
 
 class QListWidget;
+class MmsValueWrapper;
+#include "MmsValueWrapper.h"
 
 class VariablesListWindow : public QDialog
 {
@@ -15,7 +25,7 @@ class VariablesListWindow : public QDialog
 	private:
 		QListWidget *variableListWidget;
 		IedConnection _iedCon;
-		std::map<std::string, FunctionalConstraint> _VariablesList;
+		std::vector<MmsValueWrapper> _VariablesList;
 		
 
 	public slots:

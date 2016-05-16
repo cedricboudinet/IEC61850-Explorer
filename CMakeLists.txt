@@ -27,7 +27,7 @@ if( MINGW )
 	SET(CMAKE_RC_COMPILE_OBJECT
 	"<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
 endif(MINGW)
-add_library (iec61850Exp STATIC iec61850Exp_fun.cpp)
+add_library (iec61850Exp STATIC iec61850Exp_fun.cpp MmsValueWrapper.cpp)
 target_link_libraries(iec61850Exp pthread iec61850)
 
 add_executable(iec61850-shell iec61850-shell.cpp)

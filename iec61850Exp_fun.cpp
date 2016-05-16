@@ -7,6 +7,7 @@
 ///
 
 #include "iec61850Exp_fun.h"
+#include "MmsValueWrapper.h"
 #include <iostream>
 #include <algorithm>
 #ifdef WIN32
@@ -95,11 +96,14 @@ void dispLNVar(IedConnection con, const std::string & LNVarName, const std::stri
 	}
 }
 
-std::map<std::string, FunctionalConstraint> getVariableList(IedConnection con)
+std::vector<MmsValueWrapper> getVariableList(IedConnection con)
 {
-	std::map<std::string, FunctionalConstraint> listVar;
+	std::vector<MmsValueWrapper> listVar;
 	std::string varName;
 	FunctionalConstraint fc;
+	MmsType varType;
+	MmsValue * mmsVal;
+	IedClientError ier;
 	std::vector<std::string> devices = getLDList(con);
 	for(std::vector<std::string>::iterator itLD=devices.begin();itLD<devices.end();itLD++)
 	{
@@ -109,10 +113,16 @@ std::map<std::string, FunctionalConstraint> getVariableList(IedConnection con)
 			std::vector<std::string> dataObjects=getLNVars(con, (*itLD)+"/"+(*itLN));
 			for(std::vector<std::string>::iterator itDO=dataObjects.begin();itDO<dataObjects.end();itDO++)
 			{
-				//std::cout<<"  MMS : "<<(*itDO)<<std::endl;
-				//dispLNVar(con, 
 				if(getVariableName(con,*itDO, *itLD, *itLN, varName, fc))
-					listVar[varName]=fc;
+				{
+					mmsVal = IedConnection_readObject(con, &ier, varName.c_str(), fc);
+					varType = MmsValue_getType(mmsVal);
+					if( (varType!=MMS_STRUCTURE))
+					{   // Do not add structured types
+						MmsValueWrapper newVal(varName, fc, varType);
+						listVar.push_back(newVal);
+					}
+				}
 			}
 		}
 	}
@@ -186,3 +196,4 @@ int display_server_structure(IedConnection con)
 	}
 	return 1;
 }
+

@@ -1,3 +1,10 @@
+/// @author Cedric Boudinet
+/// @license GNU GPL Version 3
+///
+/// Distributed under the GNU GPL version 3 License
+/// (See accompanying file LICENSE or copy at
+/// http://www.gnu.org/licenses/)
+///
 #include "VariablesListWindow.h"
 #include "iec61850Exp_fun.h"
 #include <QGridLayout>
@@ -5,6 +12,7 @@
 #include <QListWidget>
 #include <iostream>
 #include "iec61850Exp_fun.h"
+#include "MmsValueWrapper.h"
 VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) : QDialog(parent), _iedCon(iedCon)
 {
 	QGridLayout *layout = new QGridLayout;
@@ -20,8 +28,8 @@ VariablesListWindow::VariablesListWindow(QWidget *parent, IedConnection iedCon) 
 	setLayout(layout);
 	resize(400, 300);
 	_VariablesList = getVariableList(iedCon);
-	for(std::map<std::string, FunctionalConstraint>::iterator it =_VariablesList.begin();it!=_VariablesList.end();it++)
-		variableListWidget->addItem(QString(it->first.c_str())+" ["+FunctionalConstraint_toString(it->second)+"]");
+	for(std::vector<MmsValueWrapper>::iterator it =_VariablesList.begin();it!=_VariablesList.end();it++)
+		variableListWidget->addItem(QString(it->getDispName().c_str()));
 }
 
 

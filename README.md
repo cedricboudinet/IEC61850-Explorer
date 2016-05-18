@@ -4,7 +4,7 @@ IEC61850-Explorer is a basic explorer for exploring, reading and writing values 
 
 The application is cross-platform (Linux and Windows) and licensed under GPLv3.
 
-Prebuilt package for Windows are available in the [Releases](releases) section.
+Prebuilt package for Windows are available in the [Releases](../../releases) section.
 
 ### Dependencies
 

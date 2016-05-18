@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>spy.png</file>
+        <file>../art/spy.png</file>
     </qresource>
 </RCC>

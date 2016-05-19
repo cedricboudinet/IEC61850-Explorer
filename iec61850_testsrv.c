@@ -4,12 +4,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <signal.h>
 #include <libiec61850/iec61850_server.h>
 #include <libiec61850/hal_thread.h>
 #include <time.h>
-#include <pthread.h>
 
 static int running = 0;
 static IedServer iedServer = NULL;
@@ -113,7 +111,7 @@ int main(int argc, char **argv)
 	float myfloat=0;
 	while (running) 
 	{
-		sleep(1);
+		Thread_sleep(1);
 		uint64_t timeval = Hal_getTimeInMs();
 		IedServer_lockDataModel(iedServer);
 		IedServer_updateUTCTimeAttributeValue(iedServer, varSAV_t, timeval);

@@ -9,49 +9,48 @@
 #include <QMenu>
 #include <QHeaderView>
 #include <QMessageBox>
-VariablesView::VariablesView(QWidget *parent) : QTableWidget(0,2, parent)
+#include <iostream>
+
+VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
 {
 	setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-	horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	QStringList labels;
 	labels << tr("Variable") << tr("Value");
-	setHorizontalHeaderLabels(labels);
-	horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-	verticalHeader()->hide();
+	setHeaderLabels(labels);
+	header()->setSectionResizeMode(0, QHeaderView::Stretch);
+	header()->setSectionResizeMode(1, QHeaderView::Stretch);
+	setSelectionMode( QAbstractItemView::ExtendedSelection );
+
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setContextMenuPolicy(Qt::CustomContextMenu);
+	setRootIsDecorated(false);
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(customMenuRequested(QPoint)));
 }
 
 void VariablesView::customMenuRequested(QPoint pos)
 {
-	//QModelIndex index=indexAt(pos);
 
 	QMenu *menu=new QMenu(this);
 	menu->addAction(new QAction("Delete", this));
 	QAction * selAction = menu->exec(viewport()->mapToGlobal(pos));
 	if(selAction)
 	{
-		int i=0;
-		while(i<rowCount())
-		{
-			if(item(i,0)->isSelected())
-				removeRow(i);
-			else
-				i++;
-		}
+		foreach(QTreeWidgetItem * selItem, selectedItems())//TODO
+			delete selItem;
 	}
 }
 
 void VariablesView::addVariables(const QStringList& varList)
 {
-	int row = rowCount();
+	QTreeWidgetItem *after = 0;
+	QTreeWidgetItem *item;
 	for(QStringList::const_iterator it=varList.begin(); it!=varList.end();it++)
 	{
-		insertRow(row);
-		setItem(row, 0, new QTableWidgetItem(*it));
-		setItem(row, 1, new QTableWidgetItem(""));
+		item = new QTreeWidgetItem(this, after);
+		item->setText(0, (*it));
+		item->setText(1, "");
+		item->setFlags(item->flags() | Qt::ItemIsEditable);
 	}
 
 }
@@ -65,13 +64,15 @@ void VariablesView::refresh(IedConnection IedCon, const QString& server, int por
 	{
 		MmsValue * myMms;
 		char buffer[100];
-		for(int i=0;i<rowCount();i++)
+		QTreeWidgetItemIterator it(this);
+		while (*it)
 		{
-			std::string varName = item(i,0)->text().toStdString();
+			std::string varName = (*it)->text(0).toStdString();
 			std::string fc=varName.substr(varName.size()-3,2);
 			varName=varName.substr(0,varName.size()-5);
 			myMms = IedConnection_readObject(IedCon, &error, varName.c_str(), FunctionalConstraint_fromString(fc.c_str()));
-			item(i,1)->setText(MmsValue_printToBuffer(myMms, buffer, 100));
+			(*it)->setText(1,MmsValue_printToBuffer(myMms, buffer, 100));
+			++it;
 		}
 		IedConnection_close(IedCon);
 		setCursor(Qt::ArrowCursor);

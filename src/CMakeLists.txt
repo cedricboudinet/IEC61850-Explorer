@@ -1,0 +1,37 @@
+add_library (iec61850Exp STATIC iec61850Exp_fun.cpp MmsValueWrapper.cpp)
+target_link_libraries(iec61850Exp pthread iec61850)
+
+add_executable(iec61850-shell iec61850-shell.cpp)
+target_link_libraries(iec61850-shell iec61850 iec61850Exp)
+
+add_executable(iec61850-scan iec61850-scan.cpp)
+target_link_libraries(iec61850-scan iec61850 iec61850Exp)
+
+add_executable(iec61850_varCmd iec61850_varCmd.cpp)
+target_link_libraries(iec61850_varCmd iec61850 iec61850Exp)
+
+add_executable(iec61850_testsrv iec61850_testsrv.c)
+target_link_libraries(iec61850_testsrv iec61850 pthread)
+
+IF(BUILD_GUI)
+	find_package(Qt5Widgets REQUIRED)
+	include_directories(${Qt5Widgets_INCLUDES})
+	qt5_add_resources(guiresources icons.qrc)
+	add_executable(iec61850-Explorer WIN32 iec61850-Explorer.cpp VariablesListWindow.cpp ExplorerWindow.cpp VariablesView.cpp ${RES_FILES} ${guiresources} ../include/VariablesView.h ../include/VariablesListWindow.h ../include/ExplorerWindow.h)
+	qt5_use_modules(iec61850-Explorer Widgets)
+	set_target_properties(iec61850-Explorer PROPERTIES AUTOMOC TRUE)
+	target_link_libraries(iec61850-Explorer iec61850 iec61850Exp)
+ENDIF(BUILD_GUI)
+if(WIN32)
+	set(LIBDEP_4_WIN wpcap ws2_32 iphlpapi)
+	target_link_libraries(iec61850-shell ${LIBDEP_4_WIN})
+	target_link_libraries(iec61850-Explorer ${LIBDEP_4_WIN})
+	target_link_libraries(iec61850_testsrv ${LIBDEP_4_WIN})
+	target_link_libraries(iec61850_varCmd ${LIBDEP_4_WIN})
+endif()
+
+IF(BUILD_GUI)
+	INSTALL(TARGETS iec61850-Explorer RUNTIME DESTINATION bin COMPONENT Applications)
+ENDIF(BUILD_GUI)
+INSTALL(TARGETS iec61850-shell RUNTIME DESTINATION bin COMPONENT Applications)
+INSTALL(TARGETS iec61850_varCmd RUNTIME DESTINATION bin COMPONENT Applications)

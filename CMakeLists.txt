@@ -5,7 +5,11 @@ option(BUILD_GUI "Build GUI (Requires Qt5)" ON)
 SET(EXP_VERSION_MAJOR 0)
 SET(EXP_VERSION_MINOR 3)
 SET(EXP_VERSION_PATCH 0)
-file(WRITE include/iec61850Exp_version.h "#define IECEXP_VERSION \"${EXP_VERSION_MAJOR}.${EXP_VERSION_MINOR}.${EXP_VERSION_PATCH}\"\n")
+configure_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/include/iec61850Exp_version.h.in
+		${CMAKE_CURRENT_BINARY_DIR}/include/iec61850Exp_version.h
+		@ONLY)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 endif()
@@ -15,53 +19,11 @@ IF(WIN32)
 	link_directories(third_party/libiec61850/lib)
 	include_directories(third_party/libiec61850/include)
 ENDIF()
-configure_file(
-		${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in
-		${CMAKE_CURRENT_SOURCE_DIR}/version.rc
-		@ONLY)
-set(RES_FILES "")
-if( MINGW )
-	message(STATUS "Defining compile rule for RC")
-	set(RES_FILES "version.rc")
-	set(CMAKE_RC_COMPILER_INIT windres)
-	ENABLE_LANGUAGE(RC)
-	SET(CMAKE_RC_COMPILE_OBJECT
-	"<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
-endif(MINGW)
 add_subdirectory(src)
 # Directives for building package
 IF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
 INCLUDE(InstallRequiredSystemLibraries)
 IF(WIN32)
-	#Packaging Qt5 libs:
-	GET_TARGET_PROPERTY(QT5Core_LIB_LOCATION Qt5::Core LOCATION_${BUILD_TYPE})
-	GET_TARGET_PROPERTY(QT5Gui_LIB_LOCATION Qt5::Gui LOCATION_${BUILD_TYPE})
-	GET_TARGET_PROPERTY(QT5Widgets_LIB_LOCATION Qt5::Widgets LOCATION_${BUILD_TYPE})
-	INSTALL(FILES ${QT5Core_LIB_LOCATION} ${QT5Gui_LIB_LOCATION} ${QT5Widgets_LIB_LOCATION} DESTINATION bin COMPONENT Applications)
-	get_filename_component(QT_DLL_DIR ${QT5Core_LIB_LOCATION} PATH)
-	install(FILES
-			${QT_DLL_DIR}/../plugins/platforms/qwindows.dll
-			DESTINATION bin/platforms COMPONENT Applications
-		   )
-
-	#Packaging third party librairies
-	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 PATHS third_party/libiec61850/bin)
-	message(STATUS "Found LIBIEC61850 in ${LIBIEC61850_LIBRARY}")
-	find_library(WPCAP_LIBRARY NAMES wpcap PATHS third_party/winpcap/lib)
-	message(STATUS "Found Winpcap in ${WPCAP_LIBRARY}")
-	find_library(PACKET_LIBRARY NAMES packet PATHS third_party/winpcap/lib)
-	INSTALL(FILES ${PACKET_LIBRARY} ${LIBIEC61850_LIBRARY} ${WPCAP_LIBRARY} DESTINATION bin COMPONENT Applications)
-
-	if( MINGW )
-		message( STATUS "Installing system-libraries: MinGW DLLs." )
-		get_filename_component( Mingw_Path ${CMAKE_CXX_COMPILER} PATH )
-		set( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${Mingw_Path}/libgcc_s_dw2-1.dll ${Mingw_Path}/libstdc++-6.dll ${Mingw_Path}/libwinpthread-1.dll)
-	endif( MINGW )
-
-	include( InstallRequiredSystemLibraries )
-	if( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS )
-		install( PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} DESTINATION bin COMPONENT Applications)
-	endif( CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS )
 	set(CPACK_NSIS_CREATE_ICONS "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\iec61850-Explorer.lnk' '\$INSTDIR\\\\bin\\\\iec61850-Explorer.exe'") 
 ENDIF(WIN32)
 SET(CPACK_PACKAGE_DESCRIPTION "IEC61850-Explorer")

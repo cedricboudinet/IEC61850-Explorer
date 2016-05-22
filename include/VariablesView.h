@@ -8,9 +8,9 @@
 
 #ifndef VARIABLESVIEW_H
 #define VARIABLESVIEW_H
-#include <QTableWidget>
+#include <QTreeWidget>
 #include <libiec61850/iec61850_client.h>
-class VariablesView : public QTableWidget
+class VariablesView : public QTreeWidget
 {
 	Q_OBJECT
 	public:

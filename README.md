@@ -1,23 +1,37 @@
 # IEC61850-Explorer
-=====
-IEC61850 is a basic explorer for exploring, reading and writing values in IED servers.
+------
+IEC61850-Explorer is a basic explorer for exploring, reading and writing values in IED servers.
 
-Installation
-------------
+The application is cross-platform (Linux and Windows) and licensed under GPLv3.
+
+Prebuilt package for Windows are available in the [Releases](../../releases) section.
 
 ### Dependencies
 
 - cmake
+- C++ compiler (gcc for Linux or MinGW for Windows)
 - libiec61850 (get it from http://libiec61850.com/)
 - Qt5
 
 ### Building
+
+#### Compiling from sources
 ```sh
 $ mkdir build
 $ cd build
 $ cmake ..
-$ make
+$ cmake --build .
 ```
+
+#### Package generation
+
+Under Windows, users might install NSIS (http://nsis.sourceforge.net/Main\_Page).
+An installation package can be generated with :
+```sh
+$ cpack -G <generator>
+```
+Under Linux generator can be DEB, RPM, TGZ ... depending on the wanted package format.
+Under Windows generator can be NSIS or ZIP.
 
 ### Testing
 
@@ -44,3 +58,4 @@ $ authbind iec61850_testsrv
 
 - Allow authentication
 - Add automatic refresh
+- Support for MSVC 2013

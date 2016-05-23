@@ -10,6 +10,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <iostream>
+#include "MmsTreeItem.h"
 
 VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
 {
@@ -36,21 +37,16 @@ void VariablesView::customMenuRequested(QPoint pos)
 	QAction * selAction = menu->exec(viewport()->mapToGlobal(pos));
 	if(selAction)
 	{
-		foreach(QTreeWidgetItem * selItem, selectedItems())//TODO
+		foreach(QTreeWidgetItem * selItem, selectedItems())
 			delete selItem;
 	}
 }
 
 void VariablesView::addVariables(const QStringList& varList)
 {
-	QTreeWidgetItem *after = 0;
-	QTreeWidgetItem *item;
 	for(QStringList::const_iterator it=varList.begin(); it!=varList.end();it++)
 	{
-		item = new QTreeWidgetItem(this, after);
-		item->setText(0, (*it));
-		item->setText(1, "");
-		item->setFlags(item->flags() | Qt::ItemIsEditable);
+		new MmsTreeItem(this, *it);
 	}
 
 }
@@ -62,16 +58,10 @@ void VariablesView::refresh(IedConnection IedCon, const QString& server, int por
 	IedConnection_connect(IedCon, &error, server.toStdString().c_str(), port);
 	if(error == IED_ERROR_OK)
 	{
-		MmsValue * myMms;
-		char buffer[100];
 		QTreeWidgetItemIterator it(this);
 		while (*it)
 		{
-			std::string varName = (*it)->text(0).toStdString();
-			std::string fc=varName.substr(varName.size()-3,2);
-			varName=varName.substr(0,varName.size()-5);
-			myMms = IedConnection_readObject(IedCon, &error, varName.c_str(), FunctionalConstraint_fromString(fc.c_str()));
-			(*it)->setText(1,MmsValue_printToBuffer(myMms, buffer, 100));
+			((MmsTreeItem*)(*it))->update(IedCon);
 			++it;
 		}
 		IedConnection_close(IedCon);

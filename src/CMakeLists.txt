@@ -30,7 +30,12 @@ IF(BUILD_GUI)
 	find_package(Qt5Widgets REQUIRED)
 	include_directories(${Qt5Widgets_INCLUDES})
 	qt5_add_resources(guiresources icons.qrc)
-	add_executable(iec61850-Explorer WIN32 iec61850-Explorer.cpp VariablesListWindow.cpp ExplorerWindow.cpp VariablesView.cpp ${RES_FILES} ${guiresources} ../include/VariablesView.h ../include/VariablesListWindow.h ../include/ExplorerWindow.h)
+	add_executable(iec61850-Explorer WIN32 iec61850-Explorer.cpp 
+		VariablesListWindow.cpp ../include/VariablesListWindow.h
+		ExplorerWindow.cpp ../include/ExplorerWindow.h
+		VariablesView.cpp ../include/VariablesView.h
+		MmsTreeItem.cpp ../include/MmsTreeItem.h
+		${RES_FILES} ${guiresources})
 	qt5_use_modules(iec61850-Explorer Widgets)
 	set_target_properties(iec61850-Explorer PROPERTIES AUTOMOC TRUE)
 	target_link_libraries(iec61850-Explorer iec61850 iec61850Exp)

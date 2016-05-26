@@ -23,6 +23,11 @@ $ cmake ..
 $ cmake --build .
 ```
 
+In order to build in Release mode for Windows with MSVC, the building command is:
+```sh
+cmake --build . --config Release
+```
+
 #### Package generation
 
 Under Windows, users might install NSIS (http://nsis.sourceforge.net/Main\_Page).

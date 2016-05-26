@@ -68,11 +68,11 @@ IF(WIN32)
 
 	#Packaging third party librairies
 	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
-	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 iec61850 PATHS ${CMAKE_SOURCE_DIR}/third_party/libiec61850/lib)
+	find_library(LIBIEC61850_LIBRARY NAMES iec61850 libiec61850 PATHS ${CMAKE_SOURCE_DIR}/third_party/libiec61850/bin)
 	message(STATUS "Found LIBIEC61850 in ${LIBIEC61850_LIBRARY}")
 	find_library(WPCAP_LIBRARY NAMES wpcap libwpcap PATHS third_party/winpcap/ C:/Windows/system32/)
 	message(STATUS "Found Winpcap in ${WPCAP_LIBRARY}")
-	find_library(PACKET_LIBRARY NAMES packet PATHS third_party/winpcap/lib)
+	find_library(PACKET_LIBRARY NAMES packet PATHS third_party/winpcap/lib C:/Windows/system32/)
 	message(STATUS "Found Packet in ${PACKET_LIBRARY}")
 	INSTALL(FILES ${PACKET_LIBRARY} ${LIBIEC61850_LIBRARY} ${WPCAP_LIBRARY} DESTINATION bin COMPONENT Applications)
 

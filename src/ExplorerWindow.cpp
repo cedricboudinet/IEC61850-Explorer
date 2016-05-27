@@ -105,8 +105,7 @@ void ExplorerWindow::onAddVar()
 		VariablesListWindow varWin(this, IedCon);
 		if(varWin.exec())
 		{
-			QStringList varList = varWin.getSelection();
-			iecVarTable->addVariables(varList);
+			iecVarTable->addVariables(varWin.getSelection());
 		}
 		IedConnection_close(IedCon);
 	}

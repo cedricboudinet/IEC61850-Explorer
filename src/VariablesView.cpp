@@ -10,6 +10,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <iostream>
+#include "MmsValueWrapper.h"
 #include "MmsTreeItem.h"
 
 VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
@@ -40,9 +41,9 @@ void VariablesView::customMenuRequested(QPoint pos)
 		deleteSelection();
 }
 
-void VariablesView::addVariables(const QStringList& varList)
+void VariablesView::addVariables(const std::vector<MmsValueWrapper> & varList)
 {
-	for(QStringList::const_iterator it=varList.begin(); it!=varList.end();it++)
+	for(std::vector<MmsValueWrapper>::const_iterator it=varList.begin(); it!=varList.end();it++)
 	{
 		new MmsTreeItem(this, *it);
 	}

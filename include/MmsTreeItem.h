@@ -11,15 +11,17 @@
 #include <libiec61850/iec61850_client.h>
 #include <string>
 #include <libiec61850/iec61850_client.h>
+#include "MmsValueWrapper.h"
+
 class MmsTreeItem : public QTreeWidgetItem
 {
 	public:
-		MmsTreeItem(QTreeWidget *parent, const QString &);
+		MmsTreeItem(QTreeWidget *parent, MmsValueWrapper);
 		void update(IedConnection);
+		MmsValueWrapper getMmsValueWrapper();
 
 	private:
-		std::string _varName;
-		FunctionalConstraint _fc;
+		MmsValueWrapper _myMms;
 
 };
 

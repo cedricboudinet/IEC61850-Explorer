@@ -10,12 +10,13 @@
 #define VARIABLESVIEW_H
 #include <QTreeWidget>
 #include <libiec61850/iec61850_client.h>
+class MmsValueWrapper;
 class VariablesView : public QTreeWidget
 {
 	Q_OBJECT
 	public:
 		VariablesView(QWidget *parent = 0);
-		void addVariables(const QStringList&);
+		void addVariables(const std::vector<MmsValueWrapper> & varList);
 		void refresh(IedConnection, const QString& server, int port);
 	public slots:
 		void customMenuRequested(QPoint);

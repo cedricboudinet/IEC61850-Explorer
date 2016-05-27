@@ -14,3 +14,14 @@ std::string MmsValueWrapper::getDispName()
 	return (_variableName+ " ["+FunctionalConstraint_toString(_fc)+"]").c_str();
 }
 
+std::string MmsValueWrapper::getValueAsString(IedConnection IedCon)
+{
+	IedClientError error; //TODO : handle read error
+	MmsValue * myMms;
+	char buffer[100];
+	myMms = IedConnection_readObject(IedCon, &error, _variableName.c_str(), _fc);
+	std::string ret = MmsValue_printToBuffer(myMms, buffer, 100);
+	MmsValue_delete(myMms);
+	return ret;
+}
+

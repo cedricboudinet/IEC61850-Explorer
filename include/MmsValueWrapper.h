@@ -15,6 +15,9 @@ class MmsValueWrapper
 	public:
 		MmsValueWrapper(const std::string & variableName, FunctionalConstraint, MmsType);
 		std::string getDispName();
+		FunctionalConstraint getFC() { return _fc; }
+		std::string getName() { return _variableName; }
+		std::string getValueAsString(IedConnection);
 	private:
 		std::string _variableName;
 		FunctionalConstraint _fc;

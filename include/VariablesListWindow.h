@@ -14,16 +14,16 @@
 class QListWidget;
 class MmsValueWrapper;
 #include "MmsValueWrapper.h"
-
+class VariablesView;
 class VariablesListWindow : public QDialog
 {
 	Q_OBJECT
 	public:
 		VariablesListWindow(QWidget *parent, IedConnection);
-		QStringList getSelection();
+		std::vector<MmsValueWrapper> getSelection();
 
 	private:
-		QListWidget *variableListWidget;
+		VariablesView *variableListWidget;
 		IedConnection _iedCon;
 		std::vector<MmsValueWrapper> _VariablesList;
 		

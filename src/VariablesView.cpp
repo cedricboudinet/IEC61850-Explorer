@@ -33,13 +33,11 @@ void VariablesView::customMenuRequested(QPoint pos)
 {
 
 	QMenu *menu=new QMenu(this);
-	menu->addAction(new QAction("Delete", this));
+	QAction * delSel = new QAction("Delete", this);
+	menu->addAction(delSel);
 	QAction * selAction = menu->exec(viewport()->mapToGlobal(pos));
-	if(selAction)
-	{
-		foreach(QTreeWidgetItem * selItem, selectedItems())
-			delete selItem;
-	}
+	if(selAction == delSel)
+		deleteSelection();
 }
 
 void VariablesView::addVariables(const QStringList& varList)
@@ -75,3 +73,8 @@ void VariablesView::refresh(IedConnection IedCon, const QString& server, int por
 
 }
 
+void VariablesView::deleteSelection(void)
+{
+	foreach(QTreeWidgetItem * selItem, selectedItems())
+		delete selItem;
+}

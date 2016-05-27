@@ -19,6 +19,7 @@ class VariablesView : public QTreeWidget
 		void refresh(IedConnection, const QString& server, int port);
 	public slots:
 		void customMenuRequested(QPoint);
+		void deleteSelection(void);
 
 };
 

@@ -14,8 +14,8 @@
 	#include <windows.h>
 #else
 	#include <termios.h>
+	#include <unistd.h>
 #endif
-#include <unistd.h>
 std::vector<std::string> getLDList(IedConnection con)
 {
 	IedClientError error;

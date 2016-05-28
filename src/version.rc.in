@@ -9,6 +9,11 @@ BEGIN
     BEGIN
       VALUE "FileVersion", "@EXP_VERSION_MAJOR@.@EXP_VERSION_MINOR@.@EXP_VERSION_PATCH@.0"
       VALUE "ProductVersion", "@EXP_VERSION_MAJOR@.@EXP_VERSION_MINOR@.@EXP_VERSION_PATCH@.0"
+      VALUE "LegalCopyright", "Licensed under GPLv3"
     END
   END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x400, 1252
+    END
 END

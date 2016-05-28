@@ -20,6 +20,7 @@ IF(WIN32)
 	include_directories(third_party/libiec61850/include)
 ENDIF()
 add_subdirectory(src)
+
 # Directives for building package
 IF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
 INCLUDE(InstallRequiredSystemLibraries)

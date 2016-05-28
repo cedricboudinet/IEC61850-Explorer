@@ -1,5 +1,5 @@
 add_library (iec61850Exp STATIC iec61850Exp_fun.cpp MmsValueWrapper.cpp)
-target_link_libraries(iec61850Exp pthread iec61850)
+target_link_libraries(iec61850Exp iec61850)
 
 add_executable(iec61850-shell iec61850-shell.cpp)
 target_link_libraries(iec61850-shell iec61850 iec61850Exp)
@@ -11,20 +11,22 @@ add_executable(iec61850_varCmd iec61850_varCmd.cpp)
 target_link_libraries(iec61850_varCmd iec61850 iec61850Exp)
 
 add_executable(iec61850_testsrv iec61850_testsrv.c)
-target_link_libraries(iec61850_testsrv iec61850 pthread)
+target_link_libraries(iec61850_testsrv iec61850)
 set(RES_FILES "")
-if( MINGW )
+if(WIN32)
 	set(RES_FILES "${CMAKE_CURRENT_BINARY_DIR}/version.rc")
 	message(STATUS "Generating RC file : ${RES_FILES}")
 	configure_file(
 			${CMAKE_CURRENT_SOURCE_DIR}/version.rc.in
 			${RES_FILES}
 			@ONLY)
-	set(CMAKE_RC_COMPILER_INIT windres)
-	ENABLE_LANGUAGE(RC)
-	SET(CMAKE_RC_COMPILE_OBJECT
-	"<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
-endif(MINGW)
+	if( MINGW )
+		set(CMAKE_RC_COMPILER_INIT windres)
+		ENABLE_LANGUAGE(RC)
+		SET(CMAKE_RC_COMPILE_OBJECT
+		"<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+	endif(MINGW)
+endif()
 
 IF(BUILD_GUI)
 	find_package(Qt5Widgets REQUIRED)
@@ -47,6 +49,10 @@ if(WIN32)
 	target_link_libraries(iec61850_testsrv ${LIBDEP_4_WIN})
 	target_link_libraries(iec61850_varCmd ${LIBDEP_4_WIN})
 endif()
+if(UNIX)
+	target_link_libraries(iec61850Exp pthread)
+	target_link_libraries(iec61850_testsrv pthread)
+endif()
 
 IF(BUILD_GUI)
 	INSTALL(TARGETS iec61850-Explorer RUNTIME DESTINATION bin COMPONENT Applications)
@@ -66,11 +72,13 @@ IF(WIN32)
 		   )
 
 	#Packaging third party librairies
-	find_library(LIBIEC61850_LIBRARY NAMES libiec61850 PATHS ${CMAKE_SOURCE_DIR}/third_party/libiec61850/bin)
+	SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+	find_library(LIBIEC61850_LIBRARY NAMES iec61850 libiec61850 PATHS ${CMAKE_SOURCE_DIR}/third_party/libiec61850/bin)
 	message(STATUS "Found LIBIEC61850 in ${LIBIEC61850_LIBRARY}")
-	find_library(WPCAP_LIBRARY NAMES wpcap PATHS third_party/winpcap/lib)
+	find_library(WPCAP_LIBRARY NAMES wpcap libwpcap PATHS ${CMAKE_SOURCE_DIR}/third_party/winpcap/ C:/Windows/system32/)
 	message(STATUS "Found Winpcap in ${WPCAP_LIBRARY}")
-	find_library(PACKET_LIBRARY NAMES packet PATHS third_party/winpcap/lib)
+	find_library(PACKET_LIBRARY NAMES packet PATHS ${CMAKE_SOURCE_DIR}/third_party/winpcap/ C:/Windows/system32/)
+	message(STATUS "Found Packet in ${PACKET_LIBRARY}")
 	INSTALL(FILES ${PACKET_LIBRARY} ${LIBIEC61850_LIBRARY} ${WPCAP_LIBRARY} DESTINATION bin COMPONENT Applications)
 
 	if( MINGW )

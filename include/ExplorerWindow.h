@@ -21,6 +21,8 @@ class ExplorerWindow : public QWidget
 	Q_OBJECT
 	public:
 		ExplorerWindow(QWidget *parent = 0);
+		IedConnection getIedConnection();
+		bool setIedConnectionState(bool);
 
 	private:
 		QLineEdit *lineEditServer;
@@ -29,7 +31,7 @@ class ExplorerWindow : public QWidget
 		QPushButton * addVar;
 		QPushButton * connectBtn;
 		QPushButton * refreshBtn;
-		IedConnection IedCon;
+		IedConnection _iedCon;
 		QCheckBox *useAuth;
 		QLineEdit *passwdLE;
 		QCheckBox *autorefreshChkBx;

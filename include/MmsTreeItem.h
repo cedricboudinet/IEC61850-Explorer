@@ -12,6 +12,7 @@
 #include <string>
 #include <libiec61850/iec61850_client.h>
 #include "MmsValueWrapper.h"
+#include "ExplorerWindow.h"
 
 class MmsTreeItem : public QTreeWidgetItem
 {
@@ -19,6 +20,7 @@ class MmsTreeItem : public QTreeWidgetItem
 		MmsTreeItem(QTreeWidget *parent, MmsValueWrapper);
 		void update(IedConnection);
 		MmsValueWrapper getMmsValueWrapper();
+		void onEdit(ExplorerWindow*);
 
 	private:
 		MmsValueWrapper _myMms;

@@ -25,3 +25,19 @@ std::string MmsValueWrapper::getValueAsString(IedConnection IedCon)
 	return ret;
 }
 
+float MmsValueWrapper::getValueAsFloat(IedConnection IedCon)
+{
+	IedClientError error; //TODO : handle read error
+	return IedConnection_readFloatValue(IedCon, &error, _variableName.c_str(), _fc);
+}
+
+void MmsValueWrapper::setFloatValue(IedConnection IedCon, float newVal)
+{
+	IedClientError error; //TODO : handle read error
+	return IedConnection_writeFloatValue(IedCon, &error, _variableName.c_str(), _fc, newVal);
+}
+
+MmsType MmsValueWrapper::getType()
+{
+	return _mmstype;
+}

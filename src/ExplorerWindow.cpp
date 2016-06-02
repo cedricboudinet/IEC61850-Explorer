@@ -90,7 +90,7 @@ ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
 	std::string title = "IEC61850 Explorer v ";
 	title+=IECEXP_VERSION;
 	setWindowTitle(title.c_str());
-	IedCon = IedConnection_create();
+	_iedCon = IedConnection_create();
 	resize(800, 600);
 }
 
@@ -98,16 +98,17 @@ void ExplorerWindow::onAddVar()
 {
 	IedClientError error;
 	setCursor(Qt::BusyCursor);
-	IedConnection_connect(IedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
+	IedConnection_connect(_iedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
 	setCursor(Qt::ArrowCursor);
 	if(error==IED_ERROR_OK)
 	{
-		VariablesListWindow varWin(this, IedCon);
+		VariablesListWindow varWin(this, _iedCon);
 		if(varWin.exec())
 		{
 			iecVarTable->addVariables(varWin.getSelection());
 		}
-		IedConnection_close(IedCon);
+		IedConnection_close(_iedCon);
+		onRefresh();
 	}
 	else
 	{
@@ -118,7 +119,7 @@ void ExplorerWindow::onAddVar()
 void ExplorerWindow::onRefresh()
 {
 	setCursor(Qt::BusyCursor);
-	iecVarTable->refresh(IedCon, lineEditServer->text(), lineEditPort->text().toInt());
+	iecVarTable->refresh(_iedCon, lineEditServer->text(), lineEditPort->text().toInt());
 	setCursor(Qt::ArrowCursor);
 }
 
@@ -146,11 +147,32 @@ void ExplorerWindow::updateAuth()
 {
 	if(useAuth->isChecked())
 	{
-		setIedPasswd(IedCon, passwdLE->text().toStdString());
+		setIedPasswd(_iedCon, passwdLE->text().toStdString());
 	}
 	else
 	{
 		AcseAuthenticationParameter auth = (AcseAuthenticationParameter) calloc(1, sizeof(struct sAcseAuthenticationParameter));
 		AcseAuthenticationParameter_setAuthMechanism(auth, ACSE_AUTH_NONE);
 	}
+}
+
+IedConnection ExplorerWindow::getIedConnection()
+{
+	return _iedCon;
+}
+
+bool ExplorerWindow::setIedConnectionState(bool state)
+{
+	IedClientError error;
+	if(state)
+	{
+		IedConnection_connect(_iedCon, &error, lineEditServer->text().toStdString().c_str(), lineEditPort->text().toInt());
+		if(error==IED_ERROR_OK)
+		{
+			return true;
+		}
+	}
+	else
+		IedConnection_close(_iedCon);
+	return false;
 }

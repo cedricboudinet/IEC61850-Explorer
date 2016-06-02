@@ -18,6 +18,9 @@ class MmsValueWrapper
 		FunctionalConstraint getFC() { return _fc; }
 		std::string getName() { return _variableName; }
 		std::string getValueAsString(IedConnection);
+		float getValueAsFloat(IedConnection);
+		void setFloatValue(IedConnection, float);
+		MmsType getType();
 	private:
 		std::string _variableName;
 		FunctionalConstraint _fc;

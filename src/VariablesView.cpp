@@ -12,6 +12,7 @@
 #include <iostream>
 #include "MmsValueWrapper.h"
 #include "MmsTreeItem.h"
+#include "ExplorerWindow.h"
 
 VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
 {
@@ -28,6 +29,15 @@ VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
 	setContextMenuPolicy(Qt::CustomContextMenu);
 	setRootIsDecorated(false);
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(customMenuRequested(QPoint)));
+	connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(onItemDoubleClicked(QTreeWidgetItem*, int)));
+}
+
+void VariablesView::onItemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+	if(column==1)
+	{
+		((MmsTreeItem*)(item))->onEdit((ExplorerWindow*)(parent()));
+	}
 }
 
 void VariablesView::customMenuRequested(QPoint pos)

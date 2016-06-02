@@ -21,6 +21,7 @@ class VariablesView : public QTreeWidget
 	public slots:
 		void customMenuRequested(QPoint);
 		void deleteSelection(void);
+		void onItemDoubleClicked(QTreeWidgetItem *item, int column);
 
 };
 

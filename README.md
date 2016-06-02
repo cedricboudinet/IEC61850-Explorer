@@ -51,16 +51,16 @@ $ sudo chmod 711 /etc/authbind/byport/102
 
 then you can run the server by launching :
 ```sh
-$ authbind iec61850_testsrv
+$ authbind ./src/iec61850_testsrv
 ```
 
 ### Roadmap
 
 - Improve shell version
-- Allow variables modification
 
 ### Work in progress
 
+- Allow variables modification
 - Allow authentication
 - Add automatic refresh
 - Support for MSVC 2013

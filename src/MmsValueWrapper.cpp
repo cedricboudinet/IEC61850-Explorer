@@ -41,3 +41,19 @@ MmsType MmsValueWrapper::getType()
 {
 	return _mmstype;
 }
+
+void MmsValueWrapper::setStringValue(IedConnection IedCon, const std::string & newVal)
+{
+	IedClientError error; //TODO : handle read error
+	char * buffer = new char[newVal.size()+1];
+	std::copy(newVal.begin(), newVal.end(), buffer);
+	buffer[newVal.size()]='\0';
+	IedConnection_writeVisibleStringValue(IedCon, &error, _variableName.c_str(), _fc, buffer);
+	delete [] buffer;
+}
+
+void MmsValueWrapper::setIntegerValue(IedConnection IedCon, int newVal)
+{
+	IedClientError error; //TODO : handle read error
+	return IedConnection_writeInt32Value(IedCon, &error, _variableName.c_str(), _fc, newVal);
+}

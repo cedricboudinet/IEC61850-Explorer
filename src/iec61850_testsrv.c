@@ -85,10 +85,21 @@ int launchIedServer(int port_61850, bool useAuth)
 	varSAV_setMagF = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "instMag.f");
 	varSAV_t = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "t");
 	CDC_ENG_create("varENG", (ModelNode*) lln0, 0);
-	CDC_MV_create("varMV", (ModelNode*) lln0, 0, false);
+	CDC_MV_create("varMV", (ModelNode*) lln0, CDC_OPTION_RANGE, false);
+	DataObject * varLPL = CDC_LPL_create("varLPL", (ModelNode*) lln0, 0);
+	DataObject* newDA = DataObject_create("editValues", (ModelNode*)lln0 , 0);
+	DataAttribute_create("string", (ModelNode*) newDA, IEC61850_VISIBLE_STRING_255, IEC61850_FC_SP, 0, 0, 0);
+	DataAttribute_create("boolean", (ModelNode*) newDA, IEC61850_BOOLEAN, IEC61850_FC_SP, 0, 0, 0);
+	DataAttribute_create("int32", (ModelNode*) newDA, IEC61850_INT32, IEC61850_FC_SP, 0, 0, 0);
+	
 	iedServer = IedServer_create(myModel);
 	if(useAuth)
 		IedServer_setAuthenticator(iedServer, myClientAuthenticator, NULL);
+
+	DataAttribute *tempDA = (DataAttribute*) ModelNode_getChild((ModelNode*) varLPL, "vendor");
+	IedServer_updateVisibleStringAttributeValue(iedServer, tempDA, "IEC61850-Explorer");
+	tempDA = (DataAttribute*) ModelNode_getChild((ModelNode*) varLPL, "swRev");
+	IedServer_updateVisibleStringAttributeValue(iedServer, tempDA, "1.0.0");
 
 	IedServer_start(iedServer, port_61850);
 	if (!IedServer_isRunning(iedServer)) {

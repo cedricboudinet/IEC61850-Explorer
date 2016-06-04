@@ -20,6 +20,8 @@ class MmsValueWrapper
 		std::string getValueAsString(IedConnection);
 		float getValueAsFloat(IedConnection);
 		void setFloatValue(IedConnection, float);
+		void setStringValue(IedConnection, const std::string &);
+		void setIntegerValue(IedConnection, int);
 		MmsType getType();
 	private:
 		std::string _variableName;

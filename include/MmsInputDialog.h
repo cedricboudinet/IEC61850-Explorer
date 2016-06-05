@@ -16,6 +16,7 @@ class MmsInputDialog : public QInputDialog
 	public:
 		MmsInputDialog(QWidget * parent=0) : QInputDialog(parent), _parent(parent) { }
 		MmsValue * getMmsValue(const MmsValueWrapper &, bool & ok);
+		bool getBool(QWidget * parent, bool oldBool, bool *ok);
 
 	private :
 		QWidget * _parent;

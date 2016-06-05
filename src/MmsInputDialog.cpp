@@ -39,6 +39,13 @@ MmsValue * MmsInputDialog::getMmsValue(const MmsValueWrapper & wrappedValue, boo
 			}
 			break;
 		case MMS_BOOLEAN:
+			{
+				bool oldVal = MmsValue_getBoolean(newValue);
+				bool result = getBool(_parent, oldVal, &ok);
+				if(ok)
+					MmsValue_setBoolean(newValue, result);
+			}
+			break;
 		default://TODO
 			std::cout << "Data type modification not handled :"<<wrappedValue.getType()<<std::endl;
 			ok = false;
@@ -46,4 +53,9 @@ MmsValue * MmsInputDialog::getMmsValue(const MmsValueWrapper & wrappedValue, boo
 			
 	}
 	return newValue;
+}
+
+bool MmsInputDialog::getBool(QWidget * parent, bool oldBool, bool *ok)
+{
+	return (bool) getInt(parent, "Change value", "New value:", (int)oldBool, 0, 1, 1, ok);
 }

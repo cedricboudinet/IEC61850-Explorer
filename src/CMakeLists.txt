@@ -37,6 +37,7 @@ IF(BUILD_GUI)
 		ExplorerWindow.cpp ../include/ExplorerWindow.h
 		VariablesView.cpp ../include/VariablesView.h
 		MmsTreeItem.cpp ../include/MmsTreeItem.h
+		MmsInputDialog.cpp ../include/MmsInputDialog.h
 		${RES_FILES} ${guiresources})
 	qt5_use_modules(iec61850-Explorer Widgets)
 	set_target_properties(iec61850-Explorer PROPERTIES AUTOMOC TRUE)

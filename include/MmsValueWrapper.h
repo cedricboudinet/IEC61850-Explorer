@@ -22,10 +22,14 @@ class MmsValueWrapper
 		void setFloatValue(IedConnection, float);
 		void setStringValue(IedConnection, const std::string &);
 		void setIntegerValue(IedConnection, int);
-		MmsType getType();
+		void setMmsValue(IedConnection, MmsValue*);
+		MmsType getType() const;
+		MmsValue * getMmsValue() const;
+		void update(IedConnection);
 	private:
 		std::string _variableName;
 		FunctionalConstraint _fc;
 		MmsType _mmstype;
+		MmsValue * _mmsVal;
 };
 #endif

@@ -10,7 +10,6 @@
 #include <QTreeWidgetItem>
 #include <libiec61850/iec61850_client.h>
 #include <string>
-#include <libiec61850/iec61850_client.h>
 #include "MmsValueWrapper.h"
 #include "ExplorerWindow.h"
 

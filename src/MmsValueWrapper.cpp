@@ -7,7 +7,7 @@
 #include "MmsValueWrapper.h"
 
 MmsValueWrapper::MmsValueWrapper(const std::string & varName, FunctionalConstraint fc, MmsType varType) :
-	_variableName(varName), _fc(fc), _mmstype(varType) { }
+	_variableName(varName), _fc(fc), _mmstype(varType), _mmsVal(NULL) { }
 
 std::string MmsValueWrapper::getDispName()
 {
@@ -16,30 +16,35 @@ std::string MmsValueWrapper::getDispName()
 
 std::string MmsValueWrapper::getValueAsString(IedConnection IedCon)
 {
-	IedClientError error; //TODO : handle read error
-	MmsValue * myMms;
+	update(IedCon);
 	char buffer[100];
-	myMms = IedConnection_readObject(IedCon, &error, _variableName.c_str(), _fc);
-	std::string ret = MmsValue_printToBuffer(myMms, buffer, 100);
-	MmsValue_delete(myMms);
+	std::string ret = MmsValue_printToBuffer(_mmsVal, buffer, 100);
 	return ret;
 }
 
 float MmsValueWrapper::getValueAsFloat(IedConnection IedCon)
 {
-	IedClientError error; //TODO : handle read error
-	return IedConnection_readFloatValue(IedCon, &error, _variableName.c_str(), _fc);
+	update(IedCon);
+	return MmsValue_toFloat(_mmsVal);
 }
 
 void MmsValueWrapper::setFloatValue(IedConnection IedCon, float newVal)
 {
 	IedClientError error; //TODO : handle read error
-	return IedConnection_writeFloatValue(IedCon, &error, _variableName.c_str(), _fc, newVal);
+	IedConnection_writeFloatValue(IedCon, &error, _variableName.c_str(), _fc, newVal);
 }
 
-MmsType MmsValueWrapper::getType()
+MmsType MmsValueWrapper::getType() const
 {
 	return _mmstype;
+}
+
+void MmsValueWrapper::update(IedConnection IedCon)
+{
+	IedClientError error; //TODO : handle read error
+	if(_mmsVal)
+		MmsValue_delete(_mmsVal);
+	_mmsVal = IedConnection_readObject(IedCon, &error, _variableName.c_str(), _fc);
 }
 
 void MmsValueWrapper::setStringValue(IedConnection IedCon, const std::string & newVal)
@@ -55,5 +60,16 @@ void MmsValueWrapper::setStringValue(IedConnection IedCon, const std::string & n
 void MmsValueWrapper::setIntegerValue(IedConnection IedCon, int newVal)
 {
 	IedClientError error; //TODO : handle read error
-	return IedConnection_writeInt32Value(IedCon, &error, _variableName.c_str(), _fc, newVal);
+	IedConnection_writeInt32Value(IedCon, &error, _variableName.c_str(), _fc, newVal);
+}
+
+void MmsValueWrapper::setMmsValue(IedConnection IedCon, MmsValue* newVal)
+{
+	IedClientError error; //TODO : handle read error
+	return IedConnection_writeObject(IedCon, &error, _variableName.c_str(), _fc, newVal);
+}
+
+MmsValue * MmsValueWrapper::getMmsValue() const
+{
+	return _mmsVal;
 }

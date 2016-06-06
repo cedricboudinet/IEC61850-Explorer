@@ -9,7 +9,7 @@ Prebuilt package for Windows are available in the [Releases](../../releases) sec
 ### Dependencies
 
 - cmake
-- C++ compiler (gcc for Linux or MinGW for Windows)
+- C++ compiler (gcc for Linux, MinGW or MSVC for Windows)
 - libiec61850 (get it from http://libiec61850.com/)
 - Qt5
 
@@ -57,10 +57,9 @@ $ authbind ./src/iec61850_testsrv
 ### Roadmap
 
 - Improve shell version
+- Improve look and feel
 
 ### Work in progress
 
-- Allow variables modification
-- Allow authentication
-- Add automatic refresh
-- Support for MSVC 2013
+- Allow all objects types modification
+

@@ -12,6 +12,10 @@ target_link_libraries(iec61850_varCmd iec61850 iec61850Exp)
 
 add_executable(iec61850_testsrv iec61850_testsrv.c)
 target_link_libraries(iec61850_testsrv iec61850)
+
+add_executable(iec61850_svDisp iec61850_svDisp.C)
+target_link_libraries(iec61850_svDisp iec61850 rt)
+
 set(RES_FILES "")
 if(WIN32)
 	set(RES_FILES "${CMAKE_CURRENT_BINARY_DIR}/version.rc")

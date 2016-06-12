@@ -14,7 +14,7 @@ add_executable(iec61850_testsrv iec61850_testsrv.c)
 target_link_libraries(iec61850_testsrv iec61850)
 
 add_executable(iec61850_svDisp iec61850_svDisp.C)
-target_link_libraries(iec61850_svDisp iec61850 rt)
+target_link_libraries(iec61850_svDisp iec61850 iec61850Exp)
 
 set(RES_FILES "")
 if(WIN32)

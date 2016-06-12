@@ -9,6 +9,8 @@
 #define iec61850EXP_FUN_H
 #include <string>
 #include <vector>
+#include <sstream>
+#include <libiec61850/sv_subscriber.h>
 #include <libiec61850/iec61850_client.h>
 #include <map>
 class MmsValueWrapper;
@@ -22,5 +24,6 @@ bool getVariableName(IedConnection con, const std::string & LNVarName, const std
 void setIedPasswd(IedConnection, std::string password);
 void SetStdinEcho(bool enable = true);
 int display_server_structure(IedConnection);
+int unpackSVToString(const SVClientASDU asdu, const char * format, std::string & result);
 
 #endif

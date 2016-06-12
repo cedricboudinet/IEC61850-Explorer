@@ -10,9 +10,9 @@
 #include <signal.h>
 #include <stdio.h>
 #include <libiec61850/sv_subscriber.h>
-#include <sstream>
 #include <iostream>
 #include <string>
+#include "iec61850Exp_fun.h"
 
 
 static bool running = true;
@@ -29,35 +29,18 @@ static void svUpdateListener (SVSubscriber subscriber, void* parameter, SVClient
 
 	const char* svID = SVClientASDU_getSvId(asdu);
 	char * format = (char*) parameter;
-	int i, nbVals, dataSize;
-	std::stringstream oss;
-	dataSize = SVClientASDU_getDataSize(asdu);
-	nbVals = strlen(format);
 	printf("SV recv\n");
-	printf("  recv %d bytes, unpacking with format %s\n", dataSize, format);
 
 	if (svID != NULL)
 		printf("  svID=(%s)\n", svID);
 
 	printf("  smpCnt: %i\n", SVClientASDU_getSmpCnt(asdu));
 	printf("  confRev: %u\n", SVClientASDU_getConfRev(asdu));
-	int idx=0;
-	for(i=0;i<nbVals;i++)
-	{
-		switch(format[i])
-		{
-			case 'f':
-				oss << SVClientASDU_getFLOAT32(asdu, idx)<<" ";
-				idx+=4;
-				break;
-			case 'd':
-				oss << SVClientASDU_getFLOAT64(asdu, idx)<<" ";
-				idx+=8;
-				break;
-		}
-	}
-	if(idx!=dataSize) std::cerr<<"Error unserializing data : size mismatch"<<std::endl;
-	std::cout <<"  DATA: " << oss.str()<<std::endl;
+	std::string strVal;
+	if(unpackSVToString(asdu, format, strVal)==0)
+		std::cout <<"  DATA: " << strVal <<std::endl;
+	else std::cerr<<"  Error unserializing data"<<std::endl;
+	
 }
 
 int main(int argc, char** argv)

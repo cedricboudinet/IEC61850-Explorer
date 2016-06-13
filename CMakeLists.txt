@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 project(iec61850Explorer)
+ENABLE_TESTING()
 option(BUILD_GUI "Build GUI (Requires Qt5)" ON)
 
 SET(EXP_VERSION_MAJOR 0)
@@ -20,6 +21,7 @@ IF(WIN32)
 	include_directories(third_party/libiec61850/include)
 ENDIF()
 add_subdirectory(src)
+add_subdirectory(tests)
 
 # Directives for building package
 IF(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")

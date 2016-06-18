@@ -1,5 +1,7 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
+/// @copyright GNU GPL Version 3
+/// @file iec61850Exp_fun.cpp
+/// Various functions using iec61850 protocol
 ///
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
@@ -16,6 +18,7 @@
 	#include <termios.h>
 	#include <unistd.h>
 #endif
+
 std::vector<std::string> getLDList(IedConnection con)
 {
 	IedClientError error;

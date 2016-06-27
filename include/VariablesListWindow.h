@@ -1,5 +1,5 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
+/// @copyright GNU GPL Version 3
 ///
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
@@ -15,11 +15,15 @@ class QListWidget;
 class MmsValueWrapper;
 #include "MmsValueWrapper.h"
 class VariablesView;
+
+/** Dialog box displaying a list of Mms values on a server and allowing user to select some of them.*/
 class VariablesListWindow : public QDialog
 {
 	Q_OBJECT
 	public:
+		/** Class constructor*/
 		VariablesListWindow(QWidget *parent, IedConnection);
+		/** Returns a list of selected Mms values */
 		std::vector<MmsValueWrapper> getSelection();
 
 	private:
@@ -29,6 +33,7 @@ class VariablesListWindow : public QDialog
 		
 
 	public slots:
+		/** Called when user clicks on OK button.*/
 		void onOK();
 };
 

@@ -1,5 +1,5 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
+/// @copyright GNU GPL Version 3
 ///
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
@@ -36,6 +36,14 @@ MmsValue * MmsInputDialog::getMmsValue(const MmsValueWrapper & wrappedValue, boo
 				int result = getInt(_parent, "Change value", "New value:", oldVal, -1e9, 1e9, 1, &ok);
 				if(ok)
 					MmsValue_setInt32(newValue, result);
+			}
+			break;
+		case MMS_UNSIGNED:
+			{
+				int oldVal = MmsValue_toInt32(newValue);
+				int result = getInt(_parent, "Change value", "New value:", oldVal, 0, 1e9, 1, &ok);
+				if(ok)
+					MmsValue_setUint32(newValue, result);
 			}
 			break;
 		case MMS_BOOLEAN:

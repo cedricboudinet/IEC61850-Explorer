@@ -1,10 +1,11 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
-///
+/// @copyright GNU GPL Version 3
+/// @file VariablesView.cpp
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
 /// http://www.gnu.org/licenses/)
 ///
+
 #include "VariablesView.h"
 #include <QMenu>
 #include <QHeaderView>
@@ -84,7 +85,7 @@ void VariablesView::refresh(IedConnection IedCon, const QString& server, int por
 
 }
 
-void VariablesView::deleteSelection(void)
+void VariablesView::deleteSelection()
 {
 	foreach(QTreeWidgetItem * selItem, selectedItems())
 		delete selItem;

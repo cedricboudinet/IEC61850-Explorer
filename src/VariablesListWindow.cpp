@@ -1,5 +1,5 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
+/// @copyright GNU GPL Version 3
 ///
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at

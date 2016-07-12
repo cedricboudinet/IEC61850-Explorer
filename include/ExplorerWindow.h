@@ -1,5 +1,5 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
+/// @copyright GNU GPL Version 3
 ///
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
@@ -16,12 +16,16 @@ class QCheckBox;
 class QPushButton;
 class QTimer;
 
+/*! class for IEC61850 explorer window */
 class ExplorerWindow : public QWidget
 {
 	Q_OBJECT
 	public:
+		/** ExplorerWindow class constructor.*/
 		ExplorerWindow(QWidget *parent = 0);
+		/** Returns the IedConnection.*/
 		IedConnection getIedConnection();
+		/** (Dis)connects to the IED server.*/
 		bool setIedConnectionState(bool);
 
 	private:
@@ -39,10 +43,15 @@ class ExplorerWindow : public QWidget
 		QTimer *autorefreshTimer;
 
 	public slots:
+		/** Called when user clicks on 'Add variable'.\n Shows the variable list window and adds variables if result is true */
 		void onAddVar();
+		/** Called when user clicks on 'Refresh' or periodically when autoRefresh is enabled.\n Updates the displayed Mms variables.*/
 		void onRefresh();
+		/** Called when user changes the refresh period or changes the autorefresh checkbox.\n Configures the refresh timer.*/
 		void onAutorefreshConfig();
+		/** Called when user clicks on 'Use authentication' checkbox.\n Updates the authentication parameters.*/
 		void onUseAuth();
+		/** Called when user changes authentication password.\n Updates authentication parameters.*/
 		void updateAuth();
 };
 

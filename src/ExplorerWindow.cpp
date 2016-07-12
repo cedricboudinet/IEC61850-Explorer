@@ -1,6 +1,6 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
-///
+/// @copyright GNU GPL Version 3
+/// @file ExplorerWindow.cpp
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
 /// http://www.gnu.org/licenses/)

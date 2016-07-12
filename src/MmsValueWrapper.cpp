@@ -1,6 +1,6 @@
 /// @author Cedric Boudinet
-/// @license GNU GPL Version 3
-///
+/// @copyright GNU GPL Version 3
+/// @file MmsValueWrapper.cpp
 /// Distributed under the GNU GPL version 3 License
 /// (See accompanying file LICENSE or copy at
 /// http://www.gnu.org/licenses/)
@@ -22,18 +22,6 @@ std::string MmsValueWrapper::getValueAsString(IedConnection IedCon)
 	return ret;
 }
 
-float MmsValueWrapper::getValueAsFloat(IedConnection IedCon)
-{
-	update(IedCon);
-	return MmsValue_toFloat(_mmsVal);
-}
-
-void MmsValueWrapper::setFloatValue(IedConnection IedCon, float newVal)
-{
-	IedClientError error; //TODO : handle read error
-	IedConnection_writeFloatValue(IedCon, &error, _variableName.c_str(), _fc, newVal);
-}
-
 MmsType MmsValueWrapper::getType() const
 {
 	return _mmstype;
@@ -45,22 +33,6 @@ void MmsValueWrapper::update(IedConnection IedCon)
 	if(_mmsVal)
 		MmsValue_delete(_mmsVal);
 	_mmsVal = IedConnection_readObject(IedCon, &error, _variableName.c_str(), _fc);
-}
-
-void MmsValueWrapper::setStringValue(IedConnection IedCon, const std::string & newVal)
-{
-	IedClientError error; //TODO : handle read error
-	char * buffer = new char[newVal.size()+1];
-	std::copy(newVal.begin(), newVal.end(), buffer);
-	buffer[newVal.size()]='\0';
-	IedConnection_writeVisibleStringValue(IedCon, &error, _variableName.c_str(), _fc, buffer);
-	delete [] buffer;
-}
-
-void MmsValueWrapper::setIntegerValue(IedConnection IedCon, int newVal)
-{
-	IedClientError error; //TODO : handle read error
-	IedConnection_writeInt32Value(IedCon, &error, _variableName.c_str(), _fc, newVal);
 }
 
 void MmsValueWrapper::setMmsValue(IedConnection IedCon, MmsValue* newVal)

@@ -36,6 +36,7 @@ static void svUpdateListener (SVSubscriber subscriber, void* parameter, SVClient
 
 	printf("  smpCnt: %i\n", SVClientASDU_getSmpCnt(asdu));
 	printf("  confRev: %u\n", SVClientASDU_getConfRev(asdu));
+	printf("  dataSize : %u\n", SVClientASDU_getDataSize(asdu));
 	std::string strVal;
 	if(unpackSVToString(asdu, format, strVal)==0)
 		std::cout <<"  DATA: " << strVal <<std::endl;

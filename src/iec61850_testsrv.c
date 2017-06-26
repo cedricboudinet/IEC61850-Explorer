@@ -80,12 +80,17 @@ int launchIedServer(int port_61850, bool useAuth)
 	IedModel* myModel = IedModel_create("test");
 	LogicalDevice* lDevice1 = LogicalDevice_create("Device", myModel);
 	LogicalNode* lln0 = LogicalNode_create("LLN0", lDevice1);
+	DataObject* lln0_mod = CDC_ENS_create("Mod", (ModelNode*) lln0, 0);
+	DataObject* lln0_health = CDC_ENS_create("Health", (ModelNode*) lln0, 0);
 	CDC_ASG_create("varASG", (ModelNode*) lln0, 0, false);
 	DataObject * varSAV = CDC_SAV_create("varSAV", (ModelNode*) lln0, 0, false);
 	varSAV_setMagF = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "instMag.f");
 	varSAV_t = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "t");
 	CDC_ENG_create("varENG", (ModelNode*) lln0, 0);
+	CDC_ENS_create("varENS", (ModelNode*) lln0, 0);
+	CDC_DPS_create("varDPS", (ModelNode*) lln0, 0);
 	CDC_MV_create("varMV", (ModelNode*) lln0, CDC_OPTION_RANGE, false);
+	CDC_SPC_create("varSPC", (ModelNode*) lln0, 0, 0);
 	DataObject * varLPL = CDC_LPL_create("varLPL", (ModelNode*) lln0, 0);
 
 	// Adding DO in rw mode
@@ -93,6 +98,9 @@ int launchIedServer(int port_61850, bool useAuth)
 	DataAttribute * DAStr = DataAttribute_create("string", (ModelNode*) newDA, IEC61850_VISIBLE_STRING_255, IEC61850_FC_SP, 0, 0, 0);
 	DataAttribute_create("boolean", (ModelNode*) newDA, IEC61850_BOOLEAN, IEC61850_FC_SP, 0, 0, 0);
 	DataAttribute_create("int32", (ModelNode*) newDA, IEC61850_INT32, IEC61850_FC_SP, 0, 0, 0);
+	DataAttribute_create("int16", (ModelNode*) newDA, IEC61850_INT16, IEC61850_FC_SP, 0, 0, 0);
+	DataAttribute_create("uint32", (ModelNode*) newDA, IEC61850_INT32U, IEC61850_FC_SP, 0, 0, 0);
+	DataAttribute_create("int32[10]", (ModelNode*) newDA, IEC61850_INT32, IEC61850_FC_SP, 0, 10, 0);
 	
 	iedServer = IedServer_create(myModel);
 	if(useAuth)

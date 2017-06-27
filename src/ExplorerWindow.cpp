@@ -23,14 +23,14 @@
 #include "iec61850Exp_version.h"
 #include "iec61850Exp_fun.h"
 
-ExplorerWindow::ExplorerWindow(QWidget *parent) : QWidget(parent)
+ExplorerWindow::ExplorerWindow(const QString&host, const QString&port) : QWidget(0)
 {
 	QLabel *labelServer = new QLabel(tr("&Server:"));
-	lineEditServer = new QLineEdit("localhost");
+	lineEditServer = new QLineEdit(host);
 	labelServer->setBuddy(lineEditServer);
 
 	QLabel *labelPort = new QLabel(tr("&Port:"));
-	lineEditPort = new QLineEdit("102");
+	lineEditPort = new QLineEdit(port);
 	lineEditPort->setValidator(new QIntValidator(1, 0xFFFF));
 	labelPort->setBuddy(lineEditPort);
 

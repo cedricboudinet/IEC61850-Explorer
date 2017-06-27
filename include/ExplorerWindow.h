@@ -22,7 +22,7 @@ class ExplorerWindow : public QWidget
 	Q_OBJECT
 	public:
 		/** ExplorerWindow class constructor.*/
-		ExplorerWindow(QWidget *parent = 0);
+		ExplorerWindow(const QString&host, const QString&port);
 		/** Returns the IedConnection.*/
 		IedConnection getIedConnection();
 		/** (Dis)connects to the IED server.*/

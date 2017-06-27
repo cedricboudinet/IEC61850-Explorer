@@ -17,7 +17,13 @@ int main(int argc, char **argv)
 	QIcon appIcon;
 	appIcon.addFile(":/icons/art/spy");
 	app.setWindowIcon(appIcon);
-	ExplorerWindow window;
+	QString host="localhost";
+	QString port="102";
+	if(argc>1)
+		host=argv[1];
+	if(argc>2)
+		port=argv[2];
+	ExplorerWindow window(host, port);
 	window.show();
 	return app.exec();
 }

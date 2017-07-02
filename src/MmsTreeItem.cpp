@@ -7,6 +7,8 @@
 ///
 #include "MmsTreeItem.h"
 #include "MmsInputDialog.h"
+#include <QMessageBox>
+#include <QString>
 #include <iostream>
 MmsTreeItem::MmsTreeItem(QTreeWidget* parent, MmsValueWrapper theMms):
 QTreeWidgetItem(parent), _myMms(theMms)
@@ -36,7 +38,9 @@ void MmsTreeItem::onEdit(ExplorerWindow * explWin)
 	{
 		if(explWin->setIedConnectionState(true))
 		{
-			_myMms.setMmsValue(explWin->getIedConnection(), newVal);
+			IedClientError error=_myMms.setMmsValue(explWin->getIedConnection(), newVal);
+			if(error!=IED_ERROR_OK)
+				QMessageBox::warning(explWin, QString("Error writing value"), QString("Writing failed with error %1").arg(error));
 			update(explWin->getIedConnection());
 			explWin->setIedConnectionState(false);
 		}

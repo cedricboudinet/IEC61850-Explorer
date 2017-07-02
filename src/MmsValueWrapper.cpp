@@ -35,10 +35,11 @@ void MmsValueWrapper::update(IedConnection IedCon)
 	_mmsVal = IedConnection_readObject(IedCon, &error, _variableName.c_str(), _fc);
 }
 
-void MmsValueWrapper::setMmsValue(IedConnection IedCon, MmsValue* newVal)
+IedClientError MmsValueWrapper::setMmsValue(IedConnection IedCon, MmsValue* newVal)
 {
-	IedClientError error; //TODO : handle read error
-	return IedConnection_writeObject(IedCon, &error, _variableName.c_str(), _fc, newVal);
+	IedClientError error;
+	IedConnection_writeObject(IedCon, &error, _variableName.c_str(), _fc, newVal);
+	return error;
 }
 
 MmsValue * MmsValueWrapper::getMmsValue() const

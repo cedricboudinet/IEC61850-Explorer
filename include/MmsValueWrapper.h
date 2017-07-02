@@ -24,7 +24,7 @@ class MmsValueWrapper
 		/** Returns the variable value as a string.*/
 		std::string getValueAsString(IedConnection);
 		/** Sets a new value.*/
-		void setMmsValue(IedConnection, MmsValue*);
+		IedClientError setMmsValue(IedConnection, MmsValue*);
 		/** Returns the value type.*/
 		MmsType getType() const;
 		/** Returns a pointer to the current Mms value.*/

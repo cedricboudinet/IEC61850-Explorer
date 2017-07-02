@@ -91,6 +91,7 @@ int launchIedServer(int port_61850, bool useAuth)
 	CDC_DPS_create("varDPS", (ModelNode*) lln0, 0);
 	CDC_MV_create("varMV", (ModelNode*) lln0, CDC_OPTION_RANGE, false);
 	CDC_SPC_create("varSPC", (ModelNode*) lln0, 0, 0);
+	CDC_SPS_create("varSPS", (ModelNode*) lln0, 0);
 	DataObject * varLPL = CDC_LPL_create("varLPL", (ModelNode*) lln0, 0);
 
 	// Adding DO in rw mode

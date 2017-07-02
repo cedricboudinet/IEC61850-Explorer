@@ -250,3 +250,37 @@ int unpackSVToString(const SVClientASDU asdu, const char * format, std::string &
 
 	return status;
 }
+
+const char * IedClientErrorToCharP(IedClientError error)
+{
+	switch(error)
+	{
+		case IED_ERROR_OK: return "No error";
+		case IED_ERROR_NOT_CONNECTED: return "Not connected";
+		case IED_ERROR_CONNECTION_LOST: return "Connection lost";
+		case IED_ERROR_SERVICE_NOT_SUPPORTED: return "Service not supported";
+		case IED_ERROR_CONNECTION_REJECTED: return "Connection rejected";
+		case IED_ERROR_USER_PROVIDED_INVALID_ARGUMENT:return "User provided invalid argument";
+		case IED_ERROR_ENABLE_REPORT_FAILED_DATASET_MISMATCH:return "Enable report failed dataset mismatch";
+		case IED_ERROR_OBJECT_REFERENCE_INVALID :return "Object reference invalid";
+		case IED_ERROR_UNEXPECTED_VALUE_RECEIVED:return "Unexpected value received";
+		case IED_ERROR_TIMEOUT:return "Timeout";
+		case IED_ERROR_ACCESS_DENIED:return "Access denied";
+		case IED_ERROR_ALREADY_CONNECTED:return "Already connected";
+		case IED_ERROR_OBJECT_DOES_NOT_EXIST:return "Object does not exist";
+		case IED_ERROR_OBJECT_EXISTS:return "Object exists";
+		case IED_ERROR_OBJECT_ACCESS_UNSUPPORTED:return "Object access unsupported";
+		case IED_ERROR_TYPE_INCONSISTENT:return "Type inconsistent";
+		case IED_ERROR_TEMPORARILY_UNAVAILABLE:return "Temporarily unavailable";
+		case IED_ERROR_OBJECT_UNDEFINED:return "Object undefined";
+		case IED_ERROR_INVALID_ADDRESS:return "Invalid address";
+		case IED_ERROR_HARDWARE_FAULT:return "Hardware fault";
+		case IED_ERROR_TYPE_UNSUPPORTED:return "Type unsupported";
+		case IED_ERROR_OBJECT_ATTRIBUTE_INCONSISTENT:return "Object attribute inconsistent";
+		case IED_ERROR_OBJECT_VALUE_INVALID:return "Object value invalid";
+		case IED_ERROR_OBJECT_INVALIDATED:return "Object invalidated";
+		case IED_ERROR_SERVICE_NOT_IMPLEMENTED:return "Service not implemented";
+		case IED_ERROR_UNKNOWN:return "Unknown error";
+	}
+	return "Unhandled case";
+}

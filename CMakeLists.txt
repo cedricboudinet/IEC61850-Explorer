@@ -5,7 +5,7 @@ option(BUILD_GUI "Build GUI (Requires Qt5)" ON)
 
 SET(EXP_VERSION_MAJOR 0)
 SET(EXP_VERSION_MINOR 4)
-SET(EXP_VERSION_PATCH 1)
+SET(EXP_VERSION_PATCH 2)
 configure_file(
 		${CMAKE_CURRENT_SOURCE_DIR}/include/iec61850Exp_version.h.in
 		${CMAKE_CURRENT_BINARY_DIR}/include/iec61850Exp_version.h

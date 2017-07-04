@@ -29,6 +29,7 @@ VariablesView::VariablesView(QWidget *parent) : QTreeWidget(parent)
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setContextMenuPolicy(Qt::CustomContextMenu);
 	setRootIsDecorated(false);
+	setSortingEnabled(true);
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(customMenuRequested(QPoint)));
 	connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(onItemDoubleClicked(QTreeWidgetItem*, int)));
 }

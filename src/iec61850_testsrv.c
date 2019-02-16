@@ -51,7 +51,7 @@ void parseCmdLine(int argc, char **argv, int * iecPort, int * useAuth)
 	}
 }
 
-static bool myClientAuthenticator(void* parameter, AcseAuthenticationParameter authParameter, void** securityToken)
+static bool myClientAuthenticator(void* parameter, AcseAuthenticationParameter authParameter, void** securityToken, IsoApplicationReference* appRef)
 {
 	//printf("Authenticating password is %s\n", password);
 	if (authParameter->mechanism == ACSE_AUTH_PASSWORD) {
@@ -80,8 +80,8 @@ int launchIedServer(int port_61850, bool useAuth)
 	IedModel* myModel = IedModel_create("test");
 	LogicalDevice* lDevice1 = LogicalDevice_create("Device", myModel);
 	LogicalNode* lln0 = LogicalNode_create("LLN0", lDevice1);
-	DataObject* lln0_mod = CDC_ENS_create("Mod", (ModelNode*) lln0, 0);
-	DataObject* lln0_health = CDC_ENS_create("Health", (ModelNode*) lln0, 0);
+	/*DataObject* lln0_mod = */CDC_ENS_create("Mod", (ModelNode*) lln0, 0);
+	/*DataObject* lln0_health = */CDC_ENS_create("Health", (ModelNode*) lln0, 0);
 	CDC_ASG_create("varASG", (ModelNode*) lln0, 0, false);
 	DataObject * varSAV = CDC_SAV_create("varSAV", (ModelNode*) lln0, 0, false);
 	varSAV_setMagF = (DataAttribute*) ModelNode_getChild((ModelNode*) varSAV, "instMag.f");

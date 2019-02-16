@@ -44,7 +44,7 @@ void SetStdinEcho(bool enable = true);
 int display_server_structure(IedConnection);
 
 /** unpacks a Sample Value data into a std::string using a given format */
-int unpackSVToString(const SVClientASDU asdu, const char * format, std::string & result);
+int unpackSVToString(const SVSubscriber_ASDU asdu, const char * format, std::string & result);
 
 const char * IedClientErrorToCharP(IedClientError error);
 #endif

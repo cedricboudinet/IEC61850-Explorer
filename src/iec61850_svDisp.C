@@ -24,19 +24,19 @@ void sigint_handler(int signalId)
 
 
 /* Callback handler for received SV messages */
-static void svUpdateListener (SVSubscriber subscriber, void* parameter, SVClientASDU asdu)
+static void svUpdateListener (SVSubscriber subscriber, void* parameter, SVSubscriber_ASDU asdu)
 {
 
-	const char* svID = SVClientASDU_getSvId(asdu);
+	const char* svID = SVSubscriber_ASDU_getSvId(asdu);
 	char * format = (char*) parameter;
 	printf("SV recv\n");
 
 	if (svID != NULL)
 		printf("  svID=(%s)\n", svID);
 
-	printf("  smpCnt: %i\n", SVClientASDU_getSmpCnt(asdu));
-	printf("  confRev: %u\n", SVClientASDU_getConfRev(asdu));
-	printf("  dataSize : %u\n", SVClientASDU_getDataSize(asdu));
+	printf("  smpCnt: %i\n", SVSubscriber_ASDU_getSmpCnt(asdu));
+	printf("  confRev: %u\n", SVSubscriber_ASDU_getConfRev(asdu));
+	printf("  dataSize : %u\n", SVSubscriber_ASDU_getDataSize(asdu));
 	std::string strVal;
 	if(unpackSVToString(asdu, format, strVal)==0)
 		std::cout <<"  DATA: " << strVal <<std::endl;

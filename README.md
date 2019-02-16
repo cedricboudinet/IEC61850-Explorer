@@ -10,7 +10,7 @@ Prebuilt package for Windows are available in the [Releases](../../releases) sec
 
 - cmake
 - C++ compiler (gcc for Linux, MinGW or MSVC for Windows)
-- libiec61850 (get it from http://libiec61850.com/)
+- libiec61850 v1.3.2 (get it from http://libiec61850.com/)
 - Qt5
 
 ### Building

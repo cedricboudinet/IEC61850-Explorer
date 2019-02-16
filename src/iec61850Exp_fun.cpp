@@ -200,10 +200,10 @@ int display_server_structure(IedConnection con)
 	return 1;
 }
 
-int unpackSVToString(const SVClientASDU asdu, const char * format, std::string & result)
+int unpackSVToString(const SVSubscriber_ASDU asdu, const char * format, std::string & result)
 {
 	int status = 0;
-	int dataSize = SVClientASDU_getDataSize(asdu);
+	int dataSize = SVSubscriber_ASDU_getDataSize(asdu);
 	int nbVals = strlen(format);
 	std::stringstream oss;
 	int idx = 0;
@@ -212,35 +212,35 @@ int unpackSVToString(const SVClientASDU asdu, const char * format, std::string &
 		switch(format[i])
 		{
 			case 'f':
-				oss << SVClientASDU_getFLOAT32(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getFLOAT32(asdu, idx)<<" ";
 				idx+=4;
 				break;
 			case 'd':
-				oss << SVClientASDU_getFLOAT64(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getFLOAT64(asdu, idx)<<" ";
 				idx+=8;
 				break;
 			case 'b':
-				oss << SVClientASDU_getINT8(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT8(asdu, idx)<<" ";
 				idx+=1;
 				break;
 			case 'h':
-				oss << SVClientASDU_getINT16(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT16(asdu, idx)<<" ";
 				idx+=2;
 				break;
 			case 'i':
-				oss << SVClientASDU_getINT32(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT32(asdu, idx)<<" ";
 				idx+=4;
 				break;
 			case 'B':
-				oss << SVClientASDU_getINT8U(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT8U(asdu, idx)<<" ";
 				idx+=1;
 				break;
 			case 'H':
-				oss << SVClientASDU_getINT16U(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT16U(asdu, idx)<<" ";
 				idx+=2;
 				break;
 			case 'I':
-				oss << SVClientASDU_getINT32U(asdu, idx)<<" ";
+				oss << SVSubscriber_ASDU_getINT32U(asdu, idx)<<" ";
 				idx+=4;
 				break;
 		}
